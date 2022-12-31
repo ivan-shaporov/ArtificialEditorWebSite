@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,16 +15,20 @@ namespace Editor
     {
         [FunctionName("RewriteEmail")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "options", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            /*dynamic data = JsonConvert.DeserializeObject(requestBody);
-            string name = data?.name;*/
+            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            string text = data?.text;
 
-            string responseMessage = requestBody;
+            string responseMessage = "";
+            if(text != null)
+            {
+                responseMessage = string.Join('\n', responseMessage.Split('\n').Reverse());
+            }
 
             req.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             req.HttpContext.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

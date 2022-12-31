@@ -12,7 +12,7 @@
       const draft = document.getElementById("draft");
 
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
-      let data = {element: "barium"};
+      let data = {text: draft.value};
 
       const text = await (await fetch(apiUrl, {
         method: "POST",
