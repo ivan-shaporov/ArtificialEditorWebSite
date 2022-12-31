@@ -29,8 +29,15 @@
 
     async function f(){
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
-      //const { text } = await (await fetch("/api/RewriteEmail")).json();
-      const text = await (await fetch(apiUrl)).text();
+
+      let data = {element: "barium"};
+
+      const text = await (await fetch(apiUrl, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify(data)
+      })).text();
+
       const rewritten = document.getElementById("rewritten");
       rewritten.innerText = text
     }
