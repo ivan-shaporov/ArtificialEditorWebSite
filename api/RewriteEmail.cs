@@ -24,10 +24,10 @@ namespace Editor
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             string text = data?.text;
 
-            string responseMessage = $"textisnull: '{requestBody}'";
+            string responseMessage = $"{(data == null ? "datanull" : "datagood")}, textisnull: '{requestBody}', data: {data}";
             if(text != null)
             {
-                responseMessage = string.Join('\n', responseMessage.Split('\n').Reverse());
+                responseMessage = string.Join('\n', text.Split('\n').Reverse());
             }
 
             return new OkObjectResult(responseMessage);
