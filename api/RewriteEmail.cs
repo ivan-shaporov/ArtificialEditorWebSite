@@ -24,7 +24,7 @@ namespace Editor
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             string text = data?.text;
 
-            string responseMessage = $"textisnull {requestBody}";
+            string responseMessage = $"textisnull: '{requestBody}'";
             if(text != null)
             {
                 responseMessage = string.Join('\n', responseMessage.Split('\n').Reverse());
