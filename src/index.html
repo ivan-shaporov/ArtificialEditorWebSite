@@ -16,14 +16,22 @@
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
       let data = {element: "barium"};
 
-      fetch(apiUrl, {
+      /*fetch(apiUrl, {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify(data)
       }).then(res => {
         //console.log("Request complete! response:", res);
         rewritten.value = res.text()
-      });
+      });*/
+      f();
+    }
+
+    async function f(){
+      //const { text } = await (await fetch("/api/RewriteEmail")).json();
+      const text = await (await fetch("/api/RewriteEmail")).text();
+      const rewritten = document.getElementById("rewritten");
+      rewritten.value = text
     }
   </script>
 </head>
