@@ -11,7 +11,7 @@
     {
       const draft = document.getElementById("draft");
       const rewritten = document.getElementById("rewritten");
-      //alert(draft.value);
+      alert(rewritten.innerText);
 
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
       let data = {element: "barium"};
@@ -28,10 +28,11 @@
     }
 
     async function f(){
+      const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
       //const { text } = await (await fetch("/api/RewriteEmail")).json();
-      const text = await (await fetch("/api/RewriteEmail")).text();
+      const text = await (await fetch(apiUrl)).text();
       const rewritten = document.getElementById("rewritten");
-      rewritten.value = text
+      rewritten.innerText = text
     }
   </script>
 </head>
