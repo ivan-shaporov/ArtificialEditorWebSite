@@ -22,7 +22,7 @@
         body: JSON.stringify(data)
       }).then(res => {
         //console.log("Request complete! response:", res);
-        rewritten.value = res
+        rewritten.value = res.text()
       });
     }
   </script>
