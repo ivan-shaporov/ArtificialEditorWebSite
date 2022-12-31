@@ -14,14 +14,14 @@
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
       let data = {text: draft.value};
 
-      const text = await (await fetch(apiUrl, {
+      const reply = await (await fetch(apiUrl, {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify(data)
-      })).text();
+      })).json();
 
       const rewritten = document.getElementById("rewritten");
-      rewritten.innerText = text
+      rewritten.innerText = reply.text;
     }
   </script>
 </head>
