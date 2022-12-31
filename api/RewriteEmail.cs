@@ -25,6 +25,9 @@ namespace Editor
 
             string responseMessage = requestBody;
 
+            req.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            req.HttpContext.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
             return new OkObjectResult(responseMessage);
         }
     }
