@@ -15,7 +15,7 @@ namespace Editor
     {
         [FunctionName("RewriteEmail")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "options", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -24,14 +24,11 @@ namespace Editor
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             string text = data?.text;
 
-            string responseMessage = "";
+            string responseMessage = "textisnull";
             if(text != null)
             {
                 responseMessage = string.Join('\n', responseMessage.Split('\n').Reverse());
             }
-
-            req.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-            req.HttpContext.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 
             return new OkObjectResult(responseMessage);
         }
