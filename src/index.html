@@ -7,29 +7,11 @@
   <link rel="stylesheet" href="styles.css">
   <title>Artificial Editor</title>
   <script>
-    function rewrite()
+    async function rewrite()
     {
       const draft = document.getElementById("draft");
-      const rewritten = document.getElementById("rewritten");
 
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
-      let data = {element: "barium"};
-
-      fetch(apiUrl, {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify(data)
-      }).then(res => {
-        //console.log("Request complete! response:", res);
-        rewritten.innerText = res.text()
-      });
-
-      //f();
-    }
-
-    /*async function f(){
-      const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
-
       let data = {element: "barium"};
 
       const text = await (await fetch(apiUrl, {
@@ -40,7 +22,7 @@
 
       const rewritten = document.getElementById("rewritten");
       rewritten.innerText = text
-    }*/
+    }
   </script>
 </head>
 
