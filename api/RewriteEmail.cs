@@ -21,12 +21,6 @@ namespace Editor
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
-
-            var client = new TableClient(storageConnectionString, "rewrites2");
-
-            await client.CreateIfNotExistsAsync();
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             
@@ -43,7 +37,26 @@ namespace Editor
                 responseText = string.Join('\n', text.Split('\n').Reverse());
             }
 
-            return new OkObjectResult(new { Text = responseText  + " storageConnectionString:" + storageConnectionString});
+            await StoreRewrite(text, responseText);
+
+            return new OkObjectResult(new { Text = responseText });
+        }
+
+        private static async Task StoreRewrite(string input, string output)
+        {
+            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
+
+            var client = new TableClient(storageConnectionString, "rewrites");
+
+            await client.CreateIfNotExistsAsync();
+
+            var entity = new TableEntity("partition", DateTime.UtcNow.ToString())
+            {
+                { "input", input },
+                { "output", output }
+            };
+
+            await client.AddEntityAsync(entity);
         }
     }
 }

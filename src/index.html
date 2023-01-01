@@ -10,9 +10,10 @@
     async function rewrite()
     {
       const draft = document.getElementById("draft");
+      const allowLog = document.getElementById("allowLog");
 
       const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
-      let data = {text: draft.value};
+      let data = {text: draft.value, allowLog: allowLog.checked};
 
       const reply = await (await fetch(apiUrl, {
         method: "POST",
