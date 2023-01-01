@@ -56,7 +56,7 @@ namespace Editor
                 { "output", output }
             };
 
-            await client.AddEntityAsync(entity);
+            //await client.AddEntityAsync(entity);
         }
     }
 }
