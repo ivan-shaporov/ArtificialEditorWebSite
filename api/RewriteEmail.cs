@@ -22,7 +22,15 @@ namespace Editor
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            string text = data?.text;
+            
+            if (data == null)
+            {
+                return new BadRequestResult();
+            }
+
+            string text = data.text;
+
+            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 
             string responseText = "";
             if(text != null)
@@ -30,7 +38,7 @@ namespace Editor
                 responseText = string.Join('\n', text.Split('\n').Reverse());
             }
 
-            return new OkObjectResult(new { Text = responseText});
+            return new OkObjectResult(new { Text = responseText  + " " + storageConnectionString});
         }
     }
 }
