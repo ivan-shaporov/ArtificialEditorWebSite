@@ -50,7 +50,7 @@ namespace Editor
 
             await client.CreateIfNotExistsAsync();
 
-            var entity = new TableEntity("partition", "DateTime.UtcNow.ToString()")
+            var entity = new TableEntity("partition", DateTime.UtcNow.ToString("s"))
             {
                 { "input", input },
                 { "output", output }
