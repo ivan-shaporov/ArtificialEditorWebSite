@@ -37,7 +37,7 @@ namespace Editor
                 responseText = string.Join('\n', text.Split('\n').Reverse());
             }
 
-            if (data.allowLog)
+            if ((bool)data.allowLog)
             {
                 await StoreRewrite(text, responseText);
             }
