@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Azure.Data.Tables;
 
 namespace Editor
 {
@@ -20,6 +21,12 @@ namespace Editor
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
+            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
+
+            var client = new TableClient(storageConnectionString, "rewrites2");
+
+            await client.CreateIfNotExistsAsync();
+
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             
@@ -29,8 +36,6 @@ namespace Editor
             }
 
             string text = data.text;
-
-            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 
             string responseText = "";
             if(text != null)
