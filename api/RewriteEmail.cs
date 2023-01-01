@@ -38,7 +38,7 @@ namespace Editor
                 responseText = string.Join('\n', text.Split('\n').Reverse());
             }
 
-            return new OkObjectResult(new { Text = responseText  + " " + storageConnectionString});
+            return new OkObjectResult(new { Text = responseText  + " storageConnectionString:" + storageConnectionString});
         }
     }
 }
