@@ -45,14 +45,11 @@ If you don't send it I cannot pay.
 Jack"
     ></textarea><br/>
 
-    <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) <button onclick="rewrite()">Rewrite</button>
-    </div>
-
     <div style="padding-top: 1em;">
       I would write it like this:
     </div>
 
-    <div id="rewritten" style="white-space: pre-line;">
+    <div id="rewritten" class="letter">
       Dear Mr. Doe,
 
       I hope this email finds you well. I seem to have misplaced your invoice and I was wondering if you could send it to me again. As I am unable to locate it, I am unable to process payment at this time.
@@ -61,6 +58,9 @@ Jack"
 
       Sincerely,
       Jack
+    </div>
+
+    <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) <button onclick="rewrite()">Rewrite</button>
     </div>
   </main>
 </body>
