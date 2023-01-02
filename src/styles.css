@@ -16,10 +16,11 @@ main {
 }
 
 main > h1 {
-  text-align: center;
+  /*text-align: center;*/
   font-size: 3.5em;
 }
 
+/* https://codepen.io/mlms13/pen/ngbMxq */
 .letter {
   background: #fff;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
