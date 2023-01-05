@@ -26,7 +26,8 @@
       const draft = document.getElementById("draft");
       const allowLog = document.getElementById("allowLog");
 
-      const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
+      //const apiUrl = "https://yellow-dune-042fe751e.2.azurestaticapps.net/api/RewriteEmail";
+      const apiUrl = "api/RewriteEmail";
       let data = {text: draft.value, allowLog: allowLog.checked};
 
       const reply = await (await fetch(apiUrl, {
@@ -37,6 +38,20 @@
 
       const rewritten = document.getElementById("rewritten");
       rewritten.innerText = reply.text;
+
+      /*var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/postman", true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify({
+          value: 'value'
+      }));
+      xhr.onload = function() {
+        console.log("HELLO")
+        console.log(this.responseText);
+        var data = JSON.parse(this.responseText);
+        console.log(data);
+      }*/
+
     }
   </script>
 </head>
