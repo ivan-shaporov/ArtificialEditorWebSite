@@ -63,7 +63,10 @@
         if (!response.ok) {
             throw Error(response.statusText);
         }
-        rewritten.innerText = response.json()
+        return response.json();
+      })
+      .then((data) => {
+        rewritten.innerText = data.text
       })
       .catch((error) => {
         rewritten.innerText = "Failed to process, please retry in a few minutes.";
