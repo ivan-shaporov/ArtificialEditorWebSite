@@ -59,7 +59,7 @@ namespace Editor
 
             if ((bool)request.allowLog)
             {
-                entity["input"] = request.Text;
+                entity["input"] = request.text;
                 entity["output"] = request.Text;
             }
 
