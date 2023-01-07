@@ -23,9 +23,9 @@
   <script>
     async function rewrite()
     {
-      const draft = document.getElementById("draft");
-      const allowLog = document.getElementById("allowLog");
-
+      var btnRewriteText = btnRewrite.value;
+      btnRewrite.value = "loading...";
+      btnRewrite.disabled = true;
       const apiUrl = "api/RewriteEmail";
       let data = {text: draft.value, allowLog: allowLog.checked};
 
@@ -35,8 +35,9 @@
         body: JSON.stringify(data)
       })).json();
 
-      const rewritten = document.getElementById("rewritten");
       rewritten.innerText = reply.text;
+      btnRewrite.value = btnRewriteText;
+      btnRewrite.disabled = false;
     }
   </script>
 </head>
@@ -74,9 +75,16 @@ Jack"
       Jack
     </div>
 
-    <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) <button onclick="rewrite()">Rewrite</button>
+    <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) 
+      <input type="button" value="Rewrite" id="btnRewrite" onclick="rewrite()"></input>
     </div>
   </main>
 </body>
 
+<script>
+  const draft = document.getElementById("draft");
+  const allowLog = document.getElementById("allowLog");
+  const rewritten = document.getElementById("rewritten");
+  const btnRewrite = document.getElementById("btnRewrite");
+</script>  
 </html>
