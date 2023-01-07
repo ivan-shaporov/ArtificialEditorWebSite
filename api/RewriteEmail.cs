@@ -20,10 +20,11 @@ namespace Editor
             ILogger log)
         {
             int maxRequestTextLength = int.Parse(Environment.GetEnvironmentVariable("MaxRequestTextLength"));
-            var buffer = new char[maxRequestTextLength];
-            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength + 100);
+            var overlength = 100;
+            var buffer = new char[maxRequestTextLength + overlength];
+            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength + overlength);
             
-            if (length >= maxRequestTextLength + 100)
+            if (length >= maxRequestTextLength + overlength)
             {
                 return new OkObjectResult(new { Text = "Your request is too long. Trya shorter one." });
             }
