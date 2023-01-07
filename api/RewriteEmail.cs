@@ -19,8 +19,10 @@ namespace Editor
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic request = JsonConvert.DeserializeObject(requestBody);
+            int maxRequestTextLength = int.Parse(Environment.GetEnvironmentVariable("MaxRequestTextLength"));
+            var buffer = new char[maxRequestTextLength];
+            await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength);
+            dynamic request = JsonConvert.DeserializeObject(new string(buffer));
             
             if (request == null)
             {
@@ -30,9 +32,10 @@ namespace Editor
 
             var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey")); // { MaxTokens = 7 };
 
-            string prefix = "Rewrite the following in the semi-formal e-mail style in English:\n";
+            string prefix = Environment.GetEnvironmentVariable("Prefix");
 
-            var completion = await client.GenerateCompletion(prefix + request.text);
+            //var completion = await client.GenerateCompletion(prefix + request.text);
+            var completion = client.GenerateCompletionStub(prefix + request.text);
 
             await StoreRewriteLog(prefix, request, completion);
 
@@ -49,9 +52,10 @@ namespace Editor
 
             await client.CreateIfNotExistsAsync();
 
-            var entity = new TableEntity("partition", completion.Id)
+            var entity = new TableEntity(DateTime.UtcNow.ToString("yyyy-MM"), completion.Id)
             {
-                { "prefix", prefix },
+                { "Prefix", prefix },
+                { "RequestTextLength", ((string)request.text).Length },
                 { "PromptTokens", completion.PromptTokens },
                 { "CompletionTokens", completion.CompletionTokens },
                 { "TotalTokens", completion.TotalTokens },
@@ -60,7 +64,7 @@ namespace Editor
             if ((bool)request.allowLog)
             {
                 entity["input"] = request.text;
-                entity["output"] = request.Text;
+                entity["output"] = completion.Text;
             }
 
             await client.AddEntityAsync(entity);

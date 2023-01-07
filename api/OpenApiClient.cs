@@ -18,6 +18,12 @@ namespace OpenApi
         public OpenApiClient(string key) => 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
 
+        public Completion GenerateCompletionStub(string prompt) => new Completion(null)
+        {
+            Id = "stub", 
+            Text = prompt
+        };
+
         public async Task<Completion> GenerateCompletion(string prompt)
         {
             var request = new
@@ -73,11 +79,11 @@ namespace OpenApi
     {
         internal Completion(OpenApiClient.OpenApiResponse response)
         {
-            Id = response.Id;
-            Text = response.Choices.FirstOrDefault()?.Text;
-            PromptTokens = response.Usage.Prompt_tokens;
-            CompletionTokens = response.Usage.Completion_tokens;
-            TotalTokens = response.Usage.Total_tokens;
+            Id = response?.Id;
+            Text = response?.Choices.FirstOrDefault()?.Text;
+            PromptTokens = response?.Usage.Prompt_tokens ?? 0;
+            CompletionTokens = response?.Usage.Completion_tokens ?? 0;
+            TotalTokens = response?.Usage.Total_tokens ?? 0;
         }
 
         public string Id { get; set; } //"cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7"
