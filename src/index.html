@@ -29,15 +29,49 @@
       const apiUrl = "api/RewriteEmail";
       let data = {text: draft.value, allowLog: allowLog.checked};
 
-      const reply = await (await fetch(apiUrl, {
+      /*const reply = await (await fetch(apiUrl, {
         method: "POST",
         headers: {'Content-Type': 'application/json'}, 
         body: JSON.stringify(data)
-      })).json();
+      }).catch((error) => {
+        rewritten.innerText = reply.text;
+      })).json();*/
 
-      rewritten.innerText = reply.text;
-      btnRewrite.value = btnRewriteText;
-      btnRewrite.disabled = false;
+      /*const xhr = new XMLHttpRequest();
+      xhr.open("POST", apiUrl);
+      xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
+
+      xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 201) {
+          reply = JSON.parse(xhr.responseText);
+          rewritten.innerText = reply.text;
+        } else {
+          rewritten.innerText = "Failed to process, please retry in a few minutes.";
+        }
+        btnRewrite.value = btnRewriteText;
+        btnRewrite.disabled = false;
+      };
+
+      xhr.send(JSON.stringify(data));*/
+
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify(data)
+      })
+      .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        rewritten.innerText = response.json()
+      })
+      .catch((error) => {
+        rewritten.innerText = "Failed to process, please retry in a few minutes.";
+      })
+      .finally(() => {
+        btnRewrite.value = btnRewriteText;
+        btnRewrite.disabled = false;
+      })
     }
   </script>
 </head>
