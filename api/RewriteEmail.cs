@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Data.Tables;
+using OpenApi;
 
 namespace Editor
 {
@@ -19,33 +19,29 @@ namespace Editor
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            dynamic request = JsonConvert.DeserializeObject(requestBody);
             
-            if (data == null)
+            if (request == null)
             {
+                log.LogWarning("request is null.");
                 return new BadRequestResult();
             }
 
-            string text = data.text;
+            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey")); // { MaxTokens = 7 };
 
-            string responseText = "";
-            if(text != null)
-            {
-                responseText = string.Join('\n', text.Split('\n').Reverse());
-            }
+            string prefix = "Rewrite the following in the semi-formal e-mail style in English:\n";
 
-            if ((bool)data.allowLog)
-            {
-                await StoreRewrite(text, responseText);
-            }
+            var completion = await client.GenerateCompletion(prefix + request.text);
 
-            return new OkObjectResult(new { Text = responseText });
+            await StoreRewriteLog(prefix, request, completion);
+
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            return new OkObjectResult(new { Text = completion.Text });
         }
 
-        private static async Task StoreRewrite(string input, string output)
+        private static async Task StoreRewriteLog(string prefix, dynamic request, Completion completion)
         {
             var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 
@@ -53,11 +49,19 @@ namespace Editor
 
             await client.CreateIfNotExistsAsync();
 
-            var entity = new TableEntity("partition", DateTime.UtcNow.ToString("s"))
+            var entity = new TableEntity("partition", completion.Id)
             {
-                { "input", input },
-                { "output", output }
+                { "prefix", prefix },
+                { "PromptTokens", completion.PromptTokens },
+                { "CompletionTokens", completion.CompletionTokens },
+                { "TotalTokens", completion.TotalTokens },
             };
+
+            if ((bool)request.allowLog)
+            {
+                entity["input"] = request.Text;
+                entity["output"] = request.Text;
+            }
 
             await client.AddEntityAsync(entity);
         }
