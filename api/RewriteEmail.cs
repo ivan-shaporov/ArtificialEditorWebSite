@@ -26,10 +26,10 @@ namespace Editor
             
             if (length >= maxRequestTextLength + overlength)
             {
-                return new OkObjectResult(new { Text = "Your request is too long. Trya shorter one." });
+                return new OkObjectResult(new { Text = "Your request is too long. Try a shorter one." });
             }
 
-            dynamic request = JsonConvert.DeserializeObject(new string(buffer));
+            var request = JsonConvert.DeserializeObject<RewriteRequest>(new string(buffer));
             
             if (request == null)
             {
@@ -37,9 +37,9 @@ namespace Editor
                 return new BadRequestResult();
             }
             
-            if (((string)request.text).Length >= maxRequestTextLength)
+            if (request.Text.Length > maxRequestTextLength)
             {
-                return new OkObjectResult(new { Text = "Your input is too long. Trya shorter one." });
+                return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
             }
 
             var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"));
@@ -47,7 +47,7 @@ namespace Editor
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
             //var completion = await client.GenerateCompletion(prefix + request.text);
-            var completion = client.GenerateCompletionStub(prefix + (string)request.text);
+            var completion = client.GenerateCompletionStub(prefix + request.Text);
 
             await StoreRewriteLog(prefix, request, completion);
 
@@ -56,7 +56,7 @@ namespace Editor
             return new OkObjectResult(new { Text = completion.Text });
         }
 
-        private static async Task StoreRewriteLog(string prefix, dynamic request, Completion completion)
+        private static async Task StoreRewriteLog(string prefix, RewriteRequest request, Completion completion)
         {
             var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
 
@@ -67,19 +67,25 @@ namespace Editor
             var entity = new TableEntity(partitionKey: DateTime.UtcNow.ToString("yyyy-MM"), rowKey: completion.Id)
             {
                 { "Prefix", prefix },
-                { "RequestTextLength", ((string)request.text).Length },
+                { "RequestTextLength", request.Text.Length },
                 { "PromptTokens", completion.PromptTokens },
                 { "CompletionTokens", completion.CompletionTokens },
                 { "TotalTokens", completion.TotalTokens },
             };
 
-            if ((bool)request.allowLog)
+            if (request.AllowLog)
             {
-                entity["input"] = request.text;
+                entity["input"] = request.Text;
                 entity["output"] = completion.Text;
             }
 
-            await client.AddEntityAsync(entity);
+            await client.UpsertEntityAsync(entity);
         }
+    }
+
+    class RewriteRequest
+    {
+        public string Text { get; set; }
+        public bool AllowLog { get; set; }
     }
 }
