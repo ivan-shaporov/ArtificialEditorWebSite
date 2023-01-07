@@ -23,6 +23,12 @@
   <script>
     async function rewrite()
     {
+      if (draft.value.length == 0)
+      {
+        rewritten.innerText = defaultrewrite;
+        return;
+      }
+
       var btnRewriteText = btnRewrite.value;
       btnRewrite.value = "loading...";
       btnRewrite.disabled = true;
@@ -44,7 +50,7 @@
         rewritten.innerText = data.text
       })
       .catch((error) => {
-        rewritten.innerText = "Failed to process, please retry in a few minutes.";
+        rewritten.innerText = "Failed to process, please retry later.";
       })
       .finally(() => {
         btnRewrite.value = btnRewriteText;
@@ -62,30 +68,13 @@
       I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:
     </div><br/>
 
-    <textarea maxlength="500" rows="20", cols="100" id="draft" placeholder=
-"John Doe,
-
-I lost your invoice.
-Send it again.
-If you don't send it I cannot pay.
-
-Jack"
-    ></textarea><br/>
+    <textarea maxlength="500" rows="20", cols="100" id="draft"></textarea><br/>
 
     <div style="padding-top: 1em;">
       I would write it like this:
     </div>
 
-    <div id="rewritten" class="letter">
-      Dear Mr. Doe,
-
-      I hope this email finds you well. I seem to have misplaced your invoice and I was wondering if you could send it to me again. As I am unable to locate it, I am unable to process payment at this time.
-
-      I apologize for any inconvenience this may have caused and appreciate your prompt attention to this matter.
-
-      Sincerely,
-      Jack
-    </div>
+    <div id="rewritten" class="letter"></div>
 
     <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) 
       <input type="button" value="Rewrite" id="btnRewrite" onclick="rewrite()"></input>
@@ -98,5 +87,27 @@ Jack"
   const allowLog = document.getElementById("allowLog");
   const rewritten = document.getElementById("rewritten");
   const btnRewrite = document.getElementById("btnRewrite");
+  const defaultPlaceholder =
+`John Doe,
+
+I lost your invoice.
+Send it again.
+If you don't send it I cannot pay.
+
+Jack`;
+
+  const defaultrewrite =
+`
+Dear Mr. Doe,
+
+I hope this email finds you well. I seem to have misplaced your invoice and I was wondering if you could send it to me again. As I am unable to locate it, I am unable to process payment at this time.
+
+I apologize for any inconvenience this may have caused and appreciate your prompt attention to this matter.
+
+Sincerely,
+Jack`;
+
+  rewritten.innerText = defaultrewrite;
+  draft.placeholder = defaultPlaceholder;
 </script>  
 </html>
