@@ -37,7 +37,7 @@ namespace Editor
                 return new BadRequestResult();
             }
             
-            if (request.text.Length >= maxRequestTextLength)
+            if (((string)request.text).Length >= maxRequestTextLength)
             {
                 return new OkObjectResult(new { Text = "Your input is too long. Trya shorter one." });
             }
@@ -47,7 +47,7 @@ namespace Editor
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
             //var completion = await client.GenerateCompletion(prefix + request.text);
-            var completion = client.GenerateCompletionStub(prefix + request.text);
+            var completion = client.GenerateCompletionStub(prefix + (string)request.text);
 
             await StoreRewriteLog(prefix, request, completion);
 
