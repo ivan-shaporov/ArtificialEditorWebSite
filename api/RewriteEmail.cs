@@ -21,7 +21,13 @@ namespace Editor
         {
             int maxRequestTextLength = int.Parse(Environment.GetEnvironmentVariable("MaxRequestTextLength"));
             var buffer = new char[maxRequestTextLength];
-            await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength);
+            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength + 100);
+            
+            if (length >= maxRequestTextLength + 100)
+            {
+                return new OkObjectResult(new { Text = "Your request is too long. Trya shorter one." });
+            }
+
             dynamic request = JsonConvert.DeserializeObject(new string(buffer));
             
             if (request == null)
@@ -29,8 +35,13 @@ namespace Editor
                 log.LogWarning("request is null.");
                 return new BadRequestResult();
             }
+            
+            if (request.text.Length >= maxRequestTextLength)
+            {
+                return new OkObjectResult(new { Text = "Your input is too long. Trya shorter one." });
+            }
 
-            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey")); // { MaxTokens = 7 };
+            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"));
 
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
@@ -52,7 +63,7 @@ namespace Editor
 
             await client.CreateIfNotExistsAsync();
 
-            var entity = new TableEntity(DateTime.UtcNow.ToString("yyyy-MM"), completion.Id)
+            var entity = new TableEntity(partitionKey: DateTime.UtcNow.ToString("yyyy-MM"), rowKey: completion.Id)
             {
                 { "Prefix", prefix },
                 { "RequestTextLength", ((string)request.text).Length },
