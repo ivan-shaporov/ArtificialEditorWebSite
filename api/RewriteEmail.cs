@@ -56,7 +56,7 @@ namespace Editor
 
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            return new OkObjectResult(new { Text = prefix.Replace("\\n", "\n") + "|\n" + completion.Text });
+            return new OkObjectResult(new { Text = completion.Text });
         }
 
         private static async Task StoreRewriteLog(string prefix, RewriteRequest request, Completion completion)
