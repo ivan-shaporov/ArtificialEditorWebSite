@@ -42,7 +42,10 @@ namespace Editor
                 return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
             }
 
-            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"));
+            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"))
+            {
+                MaxTokens = int.Parse(Environment.GetEnvironmentVariable("MaxCompletionTokens"))
+            };
 
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
