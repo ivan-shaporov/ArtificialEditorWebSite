@@ -47,7 +47,7 @@ namespace Editor
                 MaxTokens = int.Parse(Environment.GetEnvironmentVariable("MaxCompletionTokens"))
             };
 
-            string prefix = Environment.GetEnvironmentVariable("Prefix");
+            string prefix = Environment.GetEnvironmentVariable("Prefix").Replace("\\n", "\n");
 
             var completion = await client.GenerateCompletion(prefix + request.Text);
             //var completion = client.GenerateCompletionStub(request.Text);
