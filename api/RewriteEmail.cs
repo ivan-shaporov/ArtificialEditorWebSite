@@ -46,8 +46,8 @@ namespace Editor
 
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
-            //var completion = await client.GenerateCompletion(prefix + request.text);
-            var completion = client.GenerateCompletionStub(request.Text);
+            var completion = await client.GenerateCompletion(prefix + request.Text);
+            //var completion = client.GenerateCompletionStub(request.Text);
 
             await StoreRewriteLog(prefix, request, completion);
 
