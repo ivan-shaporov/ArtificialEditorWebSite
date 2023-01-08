@@ -29,8 +29,7 @@
         return;
       }
 
-      var btnRewriteText = btnRewrite.value;
-      btnRewrite.value = "loading...";
+      rewritten.innerText = "loading...";
       btnRewrite.disabled = true;
       const apiUrl = "api/RewriteEmail";
       let data = {text: draft.value, allowLog: allowLog.checked};
@@ -53,7 +52,6 @@
         rewritten.innerText = "Failed to process, please retry later.";
       })
       .finally(() => {
-        btnRewrite.value = btnRewriteText;
         btnRewrite.disabled = false;
       })
     }
