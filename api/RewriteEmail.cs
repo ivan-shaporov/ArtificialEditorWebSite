@@ -47,7 +47,7 @@ namespace Editor
                 MaxTokens = int.Parse(Environment.GetEnvironmentVariable("MaxCompletionTokens"))
             };
 
-            string prefix = Environment.GetEnvironmentVariable("Prefix");
+            string prefix = Environment.GetEnvironmentVariable("Prefix").Replace("\\n", "\n");
 
             var completion = await client.GenerateCompletion(prefix + request.Text);
             //var completion = client.GenerateCompletionStub(request.Text);
@@ -56,7 +56,7 @@ namespace Editor
 
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            return new OkObjectResult(new { Text = completion.Text });
+            return new OkObjectResult(new { Text = prefix + "|" + completion.Text });
         }
 
         private static async Task StoreRewriteLog(string prefix, RewriteRequest request, Completion completion)
