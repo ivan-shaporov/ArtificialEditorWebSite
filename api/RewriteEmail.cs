@@ -67,7 +67,7 @@ namespace Editor
 
             await client.CreateIfNotExistsAsync();
 
-            var entity = new TableEntity(partitionKey: DateTime.UtcNow.ToString("yyyy-MM"), rowKey: completion.Id)
+            var entity = new TableEntity(partitionKey: DateTime.UtcNow.ToString("yyyy-MM-dd"), rowKey: completion.Id)
             {
                 { "Prefix", prefix },
                 { "RequestTextLength", request.Text.Length },
