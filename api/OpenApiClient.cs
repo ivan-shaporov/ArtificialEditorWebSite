@@ -42,6 +42,8 @@ namespace OpenApi
 
             var reply = await client.PostAsync(Url, content);
 
+            reply.EnsureSuccessStatusCode();
+
             var jsonString = await reply.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<OpenApiResponse>(jsonString);
 
