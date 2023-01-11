@@ -22,6 +22,10 @@
   </script>  
 
   <script>
+    var lastDraft;
+    var lastId;
+    var lastPartition;
+
     async function rewrite()
     {
       if (draft.value.length == 0)
@@ -34,6 +38,7 @@
       btnRewrite.disabled = true;
       const apiUrl = "api/RewriteEmail";
       let data = {text: draft.value, allowLog: allowLog.checked};
+      lastDraft = data.text;
 
       fetch(apiUrl, {
         method: "POST",
@@ -48,12 +53,43 @@
       })
       .then((data) => {
         rewritten.innerText = data.text
+        lastId = data.id
+        lastPartition = data.partition
       })
       .catch((error) => {
         rewritten.innerText = "Failed to process, please retry later.";
       })
       .finally(() => {
         btnRewrite.disabled = false;
+      })
+    }
+
+    async function reportProblem()
+    {
+      if (!lastId)
+      {
+        return;
+      }
+
+      btnReportProblem.disabled = true;
+      const apiUrl = "api/ReportProblem";
+      let data = {partition: lastPartition, id: lastId, text: lastDraft, rewritten: rewritten.innerText};
+
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify(data)
+      })
+      .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+      })
+      .catch((error) => {
+        rewritten.innerText = "Failed to process, please retry later.";
+      })
+      .finally(() => {
+        btnReportProblem.disabled = false;
       })
     }
   </script>
@@ -77,6 +113,7 @@
 
     <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) 
       <input type="button" value="Rewrite" id="btnRewrite" onclick="rewrite()"></input>
+      <input type="button" value="Report problem" id="btnReportProblem" onclick="reportProblem()"></input>
     </div>
   </main>
 </body>
@@ -86,6 +123,7 @@
   const allowLog = document.getElementById("allowLog");
   const rewritten = document.getElementById("rewritten");
   const btnRewrite = document.getElementById("btnRewrite");
+  const btnReportProblem = document.getElementById("btnReportProblem");
   const defaultPlaceholder =
 `John Doe,
 
