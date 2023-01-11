@@ -55,6 +55,7 @@
         rewritten.innerText = data.text
         lastId = data.id
         lastPartition = data.partition
+        btnReportProblem.disabled = false;
       })
       .catch((error) => {
         rewritten.innerText = "Failed to process, please retry later.";
@@ -113,7 +114,7 @@
 
     <div>(allow reading by humans for improving the service <input id="allowLog" type=checkbox>) 
       <input type="button" value="Rewrite" id="btnRewrite" onclick="rewrite()"></input>
-      <input type="button" value="Report problem" id="btnReportProblem" onclick="reportProblem()"></input>
+      <input type="button" value="Report problem" id="btnReportProblem" onclick="reportProblem()" disabled="true"></input>
     </div>
   </main>
 </body>
