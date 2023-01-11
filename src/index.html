@@ -86,7 +86,7 @@
         }
       })
       .catch((error) => {
-        rewritten.innerText = "Failed to process, please retry later.";
+        rewritten.innerText = "Failed to report the problem, please retry later."; // todo: find a better place for the message.
       })
       .finally(() => {
         btnReportProblem.disabled = false;

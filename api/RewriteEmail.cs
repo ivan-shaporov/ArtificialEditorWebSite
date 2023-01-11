@@ -60,7 +60,7 @@ namespace Editor
 
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            return new OkObjectResult(new { Text = completion.Text, Id = id });
+            return new OkObjectResult(new {Partition = partition, Id = id, Text = completion.Text });
         }
 
         [FunctionName("ReportProblem")]
