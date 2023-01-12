@@ -63,6 +63,14 @@ namespace Editor
             return new OkObjectResult(new {Partition = partition, Id = id, Text = completion.Text });
         }
 
+        [FunctionName("Ping")]
+        public static IActionResult RunPing(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            return new OkResult();
+        }
+
         [FunctionName("ReportProblem")]
         public static async Task<IActionResult> RunReportProblem(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
