@@ -2,7 +2,7 @@
     "routes": 
     [
         {
-            "route": "index.html",
+            "route": "index2.html",
             "allowedRoles": ["authenticated"]
         }
     ]
