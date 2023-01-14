@@ -5,11 +5,13 @@ on:
     branches:
       - main
       - staging
+      - exp
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
       - staging
+      - exp
 
 jobs:
   build_and_deploy_job:
