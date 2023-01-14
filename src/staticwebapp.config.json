@@ -1,0 +1,9 @@
+{
+    "routes": 
+    [
+        {
+            "route": "index.html",
+            "allowedRoles": ["authenticated"]
+        }
+    ]
+}
