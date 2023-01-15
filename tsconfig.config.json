@@ -4,6 +4,5 @@
   "compilerOptions": {
     "composite": true,
     "types": ["node"]
-  },
-  /*"lib": ["es2015", "es2016", "dom", "es2018.promise"]*/
+  }
 }
