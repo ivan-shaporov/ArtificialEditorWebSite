@@ -1,88 +1,12 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import axios from "axios";
 
 var lastDraft: string;
-var lastId: string;
-var lastPartition: string;
 
 var draft: HTMLTextAreaElement;
-var allowLog: HTMLInputElement;
-var rewritten: HTMLDivElement;
-var btnRewrite: HTMLButtonElement;
-var btnReportProblem: HTMLButtonElement;
-var defaultPlaceholder: string;
-var defaultrewrite: string;
 
-async function rewrite(): Promise<void> {
-  if (draft.value.length == 0) {
-    rewritten.innerText = defaultrewrite;
-    return;
-  }
-
-  rewritten.innerText = "Let me think...";
-  btnRewrite.disabled = true;
-  const apiUrl = "api/RewriteEmail";
-  let data = { text: draft.value, allowLog: allowLog.checked };
-  lastDraft = data.text;
-
-  axios
-    .post(apiUrl, data)
-    .then((response) => {
-      rewritten.innerText = response.data.text;
-      lastId = response.data.id;
-      lastPartition = response.data.partition;
-      btnReportProblem.disabled = false;
-    })
-    .catch(() => {
-      rewritten.innerText = "Failed to process, please retry later.";
-    })
-    .finally(() => {
-      btnRewrite.disabled = false;
-    });
-}
-
-async function reportProblem() {
-  if (!lastId) {
-    return;
-  }
-
-  btnReportProblem.disabled = true;
-  const apiUrl = "api/ReportProblem";
-  let data = {
-    partition: lastPartition,
-    id: lastId,
-    text: lastDraft,
-    rewritten: rewritten.innerText,
-  };
-
-  fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-    })
-    .catch(() => {
-      rewritten.innerText = "Failed to report the problem, please retry later."; // todo: find a better place for the message.
-    })
-    .finally(() => {
-      btnReportProblem.disabled = false;
-    });
-}
-
-onMounted(() => {
-  draft = document.getElementById("draft") as HTMLTextAreaElement;
-  allowLog = document.getElementById("allowLog") as HTMLInputElement;
-  rewritten = document.getElementById("rewritten") as HTMLDivElement;
-  btnRewrite = document.getElementById("btnRewrite") as HTMLButtonElement;
-  btnReportProblem = document.getElementById(
-    "btnReportProblem"
-  ) as HTMLButtonElement;
-  defaultPlaceholder = `John Doe,
+const defaultPlaceholder = `John Doe,
 
 I lost your invoice.
 Send it again.
@@ -90,7 +14,7 @@ If you don't send it I cannot pay.
 
 Jack`;
 
-  defaultrewrite = `Dear Mr. Doe,
+const defaultRewrite = `Dear Mr. Doe,
 
 I hope this email finds you well. I seem to have misplaced your invoice and I was wondering if you could send it to me again. As I am unable to locate it, I am unable to process payment at this time.
 
@@ -99,8 +23,70 @@ I apologize for any inconvenience this may have caused and appreciate your promp
 Sincerely,
 Jack`;
 
-  rewritten.innerText = defaultrewrite;
-  draft.placeholder = defaultPlaceholder;
+const rewritten = reactive({
+  text: defaultRewrite,
+  id: null,
+  partition: null,
+});
+
+const rewriteEnabled = ref(true);
+const reportEnabled = ref(true);
+const allowLog = ref(false);
+
+async function rewrite(): Promise<void> {
+  if (draft.value.length == 0) {
+    rewritten.text = defaultRewrite;
+    return;
+  }
+
+  rewritten.text = "Let me think...";
+  rewriteEnabled.value = false;
+  const apiUrl = "api/RewriteEmail";
+  let data = { text: draft.value, allowLog: allowLog };
+  lastDraft = data.text;
+
+  axios
+    .post(apiUrl, data)
+    .then((response) => {
+      rewritten.text = response.data.text;
+      rewritten.id = response.data.id;
+      rewritten.partition = response.data.partition;
+      reportEnabled.value = true;
+    })
+    .catch(() => {
+      rewritten.text = "Failed to process, please retry later.";
+    })
+    .finally(() => {
+      rewriteEnabled.value = true;
+    });
+}
+
+async function reportProblem() {
+  if (!rewritten.id) {
+    return;
+  }
+
+  reportEnabled.value = false;
+  const apiUrl = "api/ReportProblem";
+  let data = {
+    partition: rewritten.partition,
+    id: rewritten.id,
+    text: lastDraft,
+    rewritten: rewritten.text,
+  };
+
+  axios
+    .post(apiUrl, data)
+    .catch(() => {
+      rewritten.text = "Failed to report the problem, please retry later."; // todo: find a better place for the message.
+    })
+    .finally(() => {
+      reportEnabled.value = true;
+    });
+}
+
+onMounted(() => {
+  draft = document.getElementById("draft") as HTMLTextAreaElement;
 });
 </script>
 
@@ -112,18 +98,18 @@ Jack`;
     </div>
     <div class="paper">
       <div class="paper-content">
-        <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" />
+        <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder"/>
       </div>
     </div>
 
     <div style="padding-top: 1em">I would write it like this:</div>
 
-    <div id="rewritten" class="paper-shadow"></div>
+    <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
 
     <div>
       (allow reading by humans for improving the service
-      <input id="allowLog" type="checkbox" />)
-      <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" />
+      <input id="allowLog" type="checkbox" :checked="allowLog" />)
+      <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" />
       <input
         type="button"
         value="Report problem"
@@ -136,24 +122,6 @@ Jack`;
 </template>
 
 <style scoped>
-/** {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 18px;
-}
-
-html,
-body {
-  margin: 0;
-  border: 0;
-  padding: 0;
-  background-color: rgb(199, 208, 208);
-}*/
-
-main > h1 {
-  font-size: 3.5em;
-  margin-top: 20px;
-}
-
 /* https://codepen.io/MarcMalignan/pen/QbaXGg */
 .paper {
   position: relative;
@@ -216,7 +184,8 @@ main > h1 {
   box-shadow: 0px 2px 38px rgba(0, 0, 0, 0.2);
   height: 400px;
   padding: 30px;
-  overflow: scroll;
+  overflow-y: auto;
+  white-space: pre-wrap;
 }
 .paper-shadow:after,
 .paper-shadow:before {
