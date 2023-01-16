@@ -50,8 +50,11 @@ namespace Editor
 
             string prefix = Environment.GetEnvironmentVariable("Prefix");
 
-            //var completion = await client.GenerateCompletion(prefix.Replace("\\n", "\n") + request.Text);
-            var completion = client.GenerateCompletionStub(request.Text);
+            bool stub = bool.TryParse(Environment.GetEnvironmentVariable("UseStub"), out stub) ? stub : false;
+
+            var completion = stub
+                ? client.GenerateCompletionStub(request.Text)
+                : await client.GenerateCompletion(prefix.Replace("\\n", "\n") + request.Text);
 
             string id = Hash(completion.Id);
             string partition = DateTime.UtcNow.ToString("yyyy-MM-dd");
