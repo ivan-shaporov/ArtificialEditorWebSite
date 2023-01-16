@@ -107,8 +107,7 @@ onMounted(() => {
     <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
 
     <div>
-      (allow reading by humans for improving the service
-      <input id="allowLog" type="checkbox" :checked="allowLog" />)
+      (allow reading by humans for improving the service <input id="allowLog" type="checkbox" v-model="allowLog" />)
       <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" />
       <input
         type="button"
