@@ -95,15 +95,14 @@ async function reportProblem() {
       </div>
     </div>
 
-    <div style="padding-top: 1em">I would write it like this:</div>
-
-    <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
-
     <div>
       (allow reading by humans for improving the service <input id="allowLog" type="checkbox" v-model="allowLog" />)
-      <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" />
+      <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" /> &nbsp;
       <input type="button" value="Report problem" id="btnReportProblem" @click="reportProblem" :disabled="!reportEnabled" />
     </div>
+
+    <div style="padding-top: 1em">I would write it like this:</div>
+    <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
   </main>
 </template>
 
