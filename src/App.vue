@@ -9,6 +9,7 @@ const appInsights = new ApplicationInsights({ config: {
 } });
 appInsights.loadAppInsights();
 appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
+
 var lastDraft: string;
 
 const draft = ref("");
