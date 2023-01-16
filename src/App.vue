@@ -30,7 +30,7 @@ const rewritten = reactive({
 });
 
 const rewriteEnabled = ref(true);
-const reportEnabled = ref(true);
+const reportEnabled = ref(false);
 const allowLog = ref(false);
 
 async function rewrite(): Promise<void> {
@@ -92,10 +92,7 @@ onMounted(() => {
 
 <template>
   <main>
-    <div>
-      I am Artificial Intelligence that can rewrite e-mails for you. Given the
-      text below:
-    </div>
+    <div>I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:</div>
     <div class="paper">
       <div class="paper-content">
         <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder"/>
@@ -109,13 +106,7 @@ onMounted(() => {
     <div>
       (allow reading by humans for improving the service <input id="allowLog" type="checkbox" v-model="allowLog" />)
       <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" />
-      <input
-        type="button"
-        value="Report problem"
-        id="btnReportProblem"
-        @click="reportProblem"
-        :disabled="!reportEnabled"
-      />
+      <input type="button" value="Report problem" id="btnReportProblem" @click="reportProblem" :disabled="!reportEnabled" />
     </div>
   </main>
 </template>
