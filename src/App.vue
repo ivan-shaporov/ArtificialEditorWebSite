@@ -95,7 +95,7 @@ async function copyRewritten() {
     <div>I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:</div>
     <div class="paper">
       <div class="paper-content">
-        <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder" v-model="draft"/>
+        <textarea autofocus maxlength="1000" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder" v-model="draft"/>
       </div>
     </div>
 
