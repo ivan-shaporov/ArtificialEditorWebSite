@@ -224,7 +224,7 @@ async function copyRewritten() {
      width: 18px;
      font-size: 10pt;
      font-family: tahoma;
-     margin-top: 2px;
+     margin-top: 4px;
      margin-right: 2px;
      position:absolute;
      top:0;
