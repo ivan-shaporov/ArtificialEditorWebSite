@@ -42,7 +42,7 @@ async function rewrite(): Promise<void> {
   rewritten.text = "Let me think...";
   rewriteEnabled.value = false;
   const apiUrl = "api/RewriteEmail";
-  let data = { text: draft.value, allowLog: allowLog };
+  let data = { text: draft.value, allowLog: allowLog.value };
   lastDraft = data.text;
 
   axios
