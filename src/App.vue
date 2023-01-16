@@ -101,7 +101,7 @@ async function reportProblem() {
       <input type="button" value="Report problem" id="btnReportProblem" @click="reportProblem" :disabled="!reportEnabled" />
     </div>
 
-    <div style="padding-top: 1em">I would write it like this:</div>
+    <div>I would write it like this:</div>
     <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
   </main>
 </template>
