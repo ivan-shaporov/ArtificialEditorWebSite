@@ -84,6 +84,10 @@ async function reportProblem() {
       reportEnabled.value = true;
     });
 }
+
+async function copyRewritten() {
+  await navigator.clipboard.writeText(rewritten.text);
+}
 </script>
 
 <template>
@@ -100,9 +104,11 @@ async function reportProblem() {
       <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" /> &nbsp;
       <input type="button" value="Report problem" id="btnReportProblem" @click="reportProblem" :disabled="!reportEnabled" />
     </div>
-
+    
     <div>I would write it like this:</div>
-    <div id="rewritten" class="paper-shadow">{{ rewritten.text }}</div>
+    <div id="rewritten" class="paper-shadow">{{ rewritten.text }}
+      <div id="btnCopy" @click="copyRewritten" title="Copy">📋</div>
+    </div>
   </main>
 </template>
 
@@ -210,4 +216,17 @@ async function reportProblem() {
   -moz-box-shadow: 20px 0px 25px 5px #295d92;
   box-shadow: 22px 0px 35px 0px rgba(0, 0, 0, 0.5);
 }
+
+#btnCopy {
+     line-height: 12px;
+     width: 18px;
+     font-size: 10pt;
+     font-family: tahoma;
+     margin-top: 2px;
+     margin-right: 2px;
+     position:absolute;
+     top:0;
+     right:0;
+     cursor: pointer;
+ }
 </style>
