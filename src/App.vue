@@ -114,7 +114,7 @@ onMounted(() => {
         value="Report problem"
         id="btnReportProblem"
         @click="reportProblem"
-        disabled="true"
+        :disabled="!reportEnabled"
       />
     </div>
   </main>
