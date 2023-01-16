@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import axios from "axios";
+import { ApplicationInsights } from "@microsoft/applicationinsights-web"
 
+const appInsights = new ApplicationInsights({ config: {
+  connectionString: "InstrumentationKey=4673dd3e-298b-4872-8900-83ac0a2d6bc4;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/"
+  /* ...Other Configuration Options... */
+} });
+appInsights.loadAppInsights();
+appInsights.trackPageView(); // Manually call trackPageView to establish the current user/session/pageview
 var lastDraft: string;
 
 const draft = ref("");

@@ -11,6 +11,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-web": "^2.8.9",
     "vue": "^3.2.45",
     "vue-axios": "^3.5.2"
   },
