@@ -178,6 +178,8 @@ async function copyRewritten() {
   overflow-y: auto;
   white-space: pre-wrap;
   color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
 }
 .paper-shadow:after,
 .paper-shadow:before {
