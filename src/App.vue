@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref } from "vue";
 import axios from "axios";
 
 var lastDraft: string;
 
-var draft: HTMLTextAreaElement;
+const draft = ref("");
 
 const defaultPlaceholder = `John Doe,
 
@@ -84,10 +84,6 @@ async function reportProblem() {
       reportEnabled.value = true;
     });
 }
-
-onMounted(() => {
-  draft = document.getElementById("draft") as HTMLTextAreaElement;
-});
 </script>
 
 <template>
@@ -95,7 +91,7 @@ onMounted(() => {
     <div>I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:</div>
     <div class="paper">
       <div class="paper-content">
-        <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder"/>
+        <textarea autofocus maxlength="500" rows="20" cols="100" id="draft" :placeholder="defaultPlaceholder" v-model="draft"/>
       </div>
     </div>
 
