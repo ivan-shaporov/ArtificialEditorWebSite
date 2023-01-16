@@ -171,6 +171,7 @@ async function reportProblem() {
   padding: 30px;
   overflow-y: auto;
   white-space: pre-wrap;
+  color: black;
 }
 .paper-shadow:after,
 .paper-shadow:before {
