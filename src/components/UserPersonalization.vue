@@ -1,6 +1,15 @@
 <script setup lang="ts">
+import { reactive, ref } from "vue";
 
 const emit = defineEmits(['close'])
+
+const styles = ref(["Friendly", "Busines", "Formal"])
+
+const personalization = reactive({
+  short: false,
+  style: "Friendly",
+  language: "English",
+});
 
 function close() {
     emit('close');
@@ -10,18 +19,29 @@ function close() {
 <template>
     <div class="modal-backdrop">
       <div class="modal">
-        <header class="modal-header">
-          <slot name="header">This is the default title!</slot>
-          <button type="button" class="btn-close" @click="close">x</button>
-        </header>
-  
         <section class="modal-body">
-          <slot name="body">This is the default body!</slot>
-         </section>
-  
+          <table>
+            <tr>
+              <td>Short</td>
+              <td><input type="checkbox" v-model="personalization.short" /></td>
+            </tr>
+            <tr>
+              <td>Style</td>
+              <td>
+                <template v-for="s in styles" :key="s">
+                  <input type="radio" :id="s" :value="s" v-model="personalization.style" /><label :for="s">{{s}}</label>
+                </template>
+              </td>
+            </tr>
+            <tr>
+              <td>Result Language<br/>(experimental, some languages might not work equaly well)</td>
+              <td><input v-model.trim="personalization.language"/></td>
+            </tr>
+          </table>
+        </section>
         <footer class="modal-footer">
-          <slot name="footer">This is the default footer!</slot>
-          <button type="button" class="btn-green" @click="close">Close Modal</button>
+          <button type="button" @click="close">Save</button>&nbsp;
+          <button type="button" @click="close">Cancel</button>
         </footer>
       </div>
     </div>
@@ -64,7 +84,7 @@ function close() {
 
   .modal-footer {
     border-top: 1px solid #eeeeee;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-end;
   }
 
