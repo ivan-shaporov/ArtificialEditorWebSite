@@ -45,7 +45,7 @@ var isPersonalizationVisible = ref(false);
     font-size: 12pt;
     font-family: tahoma;
     margin-top: 0px;
-    margin-right: 2px;
+    margin-right: 10px;
     position:absolute;
     top:0;
     right:0;

@@ -8,11 +8,13 @@ async function copyRewritten() {
 </script>
 
 <template>
+  <div>
     <div id="rewritten" class="paper-shadow">{{ text }}
-      <div id="toolbar">
-        <span class="bi-clipboard" @click="copyRewritten" title="Copy"></span>
-      </div>
     </div>
+    <div id="toolbar">
+      <span class="bi-clipboard" @click="copyRewritten" title="Copy"></span>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -22,7 +24,7 @@ async function copyRewritten() {
      font-size: 12pt;
      font-family: tahoma;
      margin-top: 4px;
-     margin-right: 2px;
+     margin-right: 10px;
      position:absolute;
      top:0;
      right:0;
