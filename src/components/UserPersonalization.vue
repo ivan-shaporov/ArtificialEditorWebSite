@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
+import axios from "axios";
 
 const emit = defineEmits(['close'])
 
 const styles = ref(["Friendly", "Busines", "Formal"])
 
 const personalization = reactive({
-  short: false,
+  short: true,
   style: "Friendly",
-  language: "English",
+  language: "English2",
 });
+
+onMounted(() => {
+  axios.get("api/GetUserPersonalization")
+    .then(response => {
+      personalization.short = response.data.short;
+      personalization.style = response.data.style;
+      personalization.language = response.data.language;
+    });
+})
 
 function close() {
     emit('close');
