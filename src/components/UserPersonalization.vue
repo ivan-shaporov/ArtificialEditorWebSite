@@ -70,7 +70,7 @@ function cancel() {
           <span v-if="!props.clientPrincipal">
             <a href=".auth/login/aad">Login</a> for personalization.
           </span>&nbsp;
-          <button type="button" @click="save" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
+          <button type="button" @click="save" :disabled="!props.clientPrincipal">Save</button>&nbsp;
           <button type="button" @click="cancel">Cancel</button>
         </footer>
       </div>
