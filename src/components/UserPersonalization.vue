@@ -21,11 +21,17 @@ function GetUserPersonalization()
 {
   axios.get("api/GetUserPersonalization")
     .then(response => {
-      personalization.short = response.data.short;
-      personalization.style = response.data.style;
-      personalization.language = response.data.language;
+      if (response.status == 200) {
+        personalization.short = response.data.short;
+        personalization.style = response.data.style;
+        personalization.language = response.data.language;
+      }
+      else {
+        console.log("cannot GetUserPersonalization "+ response.status)
+      }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error("cannot GetUserPersonalization "+ err)
       Object.assign(personalization, defaultPersonaliztion);
     });
 }
