@@ -27,6 +27,7 @@ function save() {
   axios
     .post("api/SaveUserPersonalization", personalization)
     .catch();
+  emit('close');
 }
 
 function close() {
