@@ -10,10 +10,13 @@ const styles = ["Friendly", "Busines", "Formal"]
 const personalization = reactive({
   short: true,
   style: "Friendly",
-  language: "English2",
+  language: "English",
 });
 
-onMounted(() => {
+onMounted(GetUserPersonalization)
+
+function GetUserPersonalization()
+{
   axios.get("api/GetUserPersonalization")
     .then(response => {
       personalization.short = response.data.short;
@@ -21,7 +24,7 @@ onMounted(() => {
       personalization.language = response.data.language;
     })
     .catch(() => console.log("cannot get personalization"));
-})
+}
 
 function save() {
   axios
@@ -30,8 +33,9 @@ function save() {
   emit('close');
 }
 
-function close() {
-    emit('close');
+function cancel() {
+  GetUserPersonalization();
+  emit('close');
 }
 </script>
 
@@ -63,7 +67,7 @@ function close() {
             <a href=".auth/login/aad">Login</a> for personalization.
           </span>&nbsp;
           <button type="button" @click="save" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
-          <button type="button" @click="close">Cancel</button>
+          <button type="button" @click="cancel">Cancel</button>
         </footer>
       </div>
     </div>
