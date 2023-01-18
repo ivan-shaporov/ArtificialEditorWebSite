@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from "vue";
+import { reactive, onMounted } from "vue";
 import axios from "axios";
 
 const props = defineProps(["modelValue", "clientPrincipal"])
 const emit = defineEmits(['close'])
 
-const styles = ref(["Friendly", "Busines", "Formal"])
+const styles = ["Friendly", "Busines", "Formal"]
 
 const personalization = reactive({
   short: true,
@@ -23,6 +23,12 @@ onMounted(() => {
     .catch(() => console.log("cannot get personalization"));
 })
 
+function save() {
+  axios
+    .post("api/SaveUserPersonalization", personalization)
+    .catch();
+}
+
 function close() {
     emit('close');
 }
@@ -32,7 +38,6 @@ function close() {
     <div class="modal-backdrop">
       <div class="modal">
         <section class="modal-body">
-          clientPrincipal: {{ props.clientPrincipal }}
           <table>
             <tr>
               <td>Short</td>
@@ -56,7 +61,7 @@ function close() {
           <span v-if="!props.clientPrincipal">
             <a href=".auth/login/aad">Login</a> for personalization.
           </span>&nbsp;
-          <button type="button" @click="close" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
+          <button type="button" @click="save" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
           <button type="button" @click="close">Cancel</button>
         </footer>
       </div>

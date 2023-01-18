@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Data.Tables;
-using OpenApi;
+using System.Security.Claims;
 
 namespace Editor
 {
@@ -20,9 +19,29 @@ namespace Editor
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
+            var principal = StaticWebAppsAuth.Parse(req);
+
+            if (!principal.IsInRole("authenticated"))
+            {
+                return new UnauthorizedResult();
+            }
+
             var table = await GetTableClient();
-            //table.GetEntityAsync()
-            return new OkObjectResult(new { Short = false, Style = "Friendly", Language = "English" });
+            
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var record = await table.GetEntityAsync<TableEntity>(userId, "Personalization");
+
+            if (record == null)
+            {
+                return new OkObjectResult(new { Short = false, Style = "Friendly", Language = "English" });
+            }
+
+            return new OkObjectResult(new 
+            { 
+                Short = record.Value.GetBoolean("Short"),
+                Style = record.Value.GetString("Style"),
+                Language = record.Value.GetString("Language")
+            });
         }
 
         [FunctionName("SaveUserPersonalization")]
@@ -30,6 +49,13 @@ namespace Editor
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            var principal = StaticWebAppsAuth.Parse(req);
+
+            if (!principal.IsInRole("authenticated"))
+            {
+                return new UnauthorizedResult();
+            }
+
             var maxLength = 100;
             var buffer = new char[maxLength];
             int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxLength);
@@ -42,8 +68,17 @@ namespace Editor
             var request = JsonConvert.DeserializeObject<UserPersonalization>(new string(buffer));
 
             var table = await GetTableClient();
-            //table.GetEntityAsync()
-            return new OkObjectResult(new { Short = false, Style = "Friendly", Language = "English" });
+
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var entity = new TableEntity(userId, "Personalization")
+            {
+                { "Language", request.Language},
+                { "Style", request.Style},
+                { "Short", request.Short},
+            };
+
+            await table.UpsertEntityAsync(entity);
+            return new OkResult();
         }
 
         private static async Task<TableClient> GetTableClient()
