@@ -44,6 +44,14 @@ namespace Editor
             });
         }
 
+        [FunctionName("PingUserPersonalization")]
+        public static IActionResult RunPingUserPersonalization(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            return new OkObjectResult("OK");
+        }
+
         [FunctionName("SaveUserPersonalization")]
         public static async Task<IActionResult> RunSaveUserPersonalization(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
