@@ -53,7 +53,7 @@ function close() {
           </table>
         </section>
         <footer class="modal-footer">
-          <span v-if="props.clientPrincipal == ''">
+          <span v-if="!props.clientPrincipal">
             <a href=".auth/login/aad">Login</a> for personalization.
           </span>&nbsp;
           <button type="button" @click="close" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
