@@ -29,9 +29,9 @@ namespace Editor
             var table = await GetTableClient();
             
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var record = await table.GetEntityAsync<TableEntity>(userId, "Personalization");
+            var record = await table.GetEntityIfExistsAsync<TableEntity>(userId, "Personalization");
 
-            if (record == null)
+            if (!record.HasValue)
             {
                 return new OkObjectResult(new { Short = false, Style = "Friendly", Language = "English" });
             }
