@@ -2,6 +2,7 @@
 import { reactive, ref, onMounted } from "vue";
 import axios from "axios";
 
+const props = defineProps(["modelValue", "clientPrincipal"])
 const emit = defineEmits(['close'])
 
 const styles = ref(["Friendly", "Busines", "Formal"])
@@ -18,7 +19,8 @@ onMounted(() => {
       personalization.short = response.data.short;
       personalization.style = response.data.style;
       personalization.language = response.data.language;
-    });
+    })
+    .catch(() => console.log("cannot get personalization"));
 })
 
 function close() {
@@ -30,6 +32,7 @@ function close() {
     <div class="modal-backdrop">
       <div class="modal">
         <section class="modal-body">
+          clientPrincipal: {{ props.clientPrincipal }}
           <table>
             <tr>
               <td>Short</td>
@@ -50,7 +53,10 @@ function close() {
           </table>
         </section>
         <footer class="modal-footer">
-          <button type="button" @click="close">Save</button>&nbsp;
+          <span v-if="props.clientPrincipal == ''">
+            <a href=".auth/login/aad">Login</a> for personalization.
+          </span>&nbsp;
+          <button type="button" @click="close" :disabled="props.clientPrincipal == ''">Save</button>&nbsp;
           <button type="button" @click="close">Cancel</button>
         </footer>
       </div>

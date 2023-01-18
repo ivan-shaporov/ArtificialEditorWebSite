@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import axios from "axios";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web"
 import UserInput from "./components/UserInput.vue";
@@ -33,6 +33,16 @@ const rewritten = reactive({
 const rewriteEnabled = ref(true);
 const reportEnabled = ref(false);
 const allowLog = ref(false);
+
+const clientPrincipal = ref("");
+
+onMounted(() => {
+  axios.get(".auth/me")
+    .then(response => {
+      clientPrincipal.value = response.data.clientPrincipal;
+    })
+    .catch(() => clientPrincipal.value = "");
+})
 
 async function rewrite(): Promise<void> {
   if (draft.value.length == 0) {
@@ -90,7 +100,7 @@ async function reportProblem() {
 <template>
   <main>
     <div>I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:</div>
-    <UserInput v-model="draft"/>
+    <UserInput v-model="draft" :clientPrincipal="clientPrincipal"/>
     
     <div>
       (allow reading by humans for improving the service <input id="allowLog" type="checkbox" v-model="allowLog" />)

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import UserPersonalization from "./UserPersonalization.vue";
 
-const props = defineProps(['modelValue'])
+const props = defineProps(["modelValue", "clientPrincipal"])
 const emit = defineEmits(['update:modelValue'])
 
 const value = computed({
@@ -35,7 +35,7 @@ var isPersonalizationVisible = ref(false);
             <span class="bi-gear" @click="isPersonalizationVisible = true" title="Personalize"></span>&nbsp;
         </div>
     </div>
-    <UserPersonalization v-show="isPersonalizationVisible" @close="isPersonalizationVisible = false"/>
+    <UserPersonalization v-show="isPersonalizationVisible" @close="isPersonalizationVisible = false" :clientPrincipal="props.clientPrincipal"/>
 </template>
 
 <style scoped>
