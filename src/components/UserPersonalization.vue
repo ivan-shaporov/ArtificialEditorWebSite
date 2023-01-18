@@ -8,7 +8,7 @@ const emit = defineEmits(['close'])
 const styles = ["Friendly", "Busines", "Formal"]
 
 const personalization = reactive({
-  short: true,
+  short: false,
   style: "Friendly",
   language: "English",
 });
@@ -43,13 +43,14 @@ function cancel() {
     <div class="modal-backdrop">
       <div class="modal">
         <section class="modal-body">
-          <table>
+          <h1>Personal preferences</h1>
+          <table class="parameters">
             <tr>
-              <td>Short</td>
-              <td><input type="checkbox" v-model="personalization.short" /></td>
+              <td>Short:</td>
+              <td><input type="checkbox" v-model="personalization.short" />&nbsp;keep it brief</td>
             </tr>
             <tr>
-              <td>Style</td>
+              <td>Style:</td>
               <td>
                 <template v-for="s in styles" :key="s">
                   <input type="radio" :id="s" :value="s" v-model="personalization.style" /><label :for="s">{{s}}</label>
@@ -57,8 +58,11 @@ function cancel() {
               </td>
             </tr>
             <tr>
-              <td>Result Language<br/>(experimental, some languages might not work equaly well)</td>
-              <td><input v-model.trim="personalization.language"/></td>
+              <td>Result Language:</td>
+              <td>
+                <input v-model.trim="personalization.language"/>
+                (experimental <i class="bi bi-info-circle warning" title="Not all languages work equaly well"></i>)
+              </td>
             </tr>
           </table>
         </section>
@@ -74,6 +78,22 @@ function cancel() {
 </template>
 
 <style scoped>
+  .warning {
+    color: red;
+  }
+
+  h1 {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0px;
+  }
+
+  .parameters td:first-child {
+    text-align: right;
+    padding-right: 5px;
+    font-weight: bold;
+  }
+
   .modal-backdrop {
     position: fixed;
     top: 0;
