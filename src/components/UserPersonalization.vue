@@ -7,11 +7,13 @@ const emit = defineEmits(['close'])
 
 const styles = ["Friendly", "Busines", "Formal"]
 
-const personalization = reactive({
-  short: false,
-  style: "Friendly",
+const defaultPersonaliztion = {
+  short: true,
+  style: styles[0],
   language: "English",
-});
+}
+
+const personalization = reactive(structuredClone(defaultPersonaliztion));
 
 onMounted(GetUserPersonalization)
 
@@ -23,7 +25,9 @@ function GetUserPersonalization()
       personalization.style = response.data.style;
       personalization.language = response.data.language;
     })
-    .catch(() => console.log("cannot get personalization"));
+    .catch(() => {
+      Object.assign(personalization, defaultPersonaliztion);
+    });
 }
 
 function save() {
