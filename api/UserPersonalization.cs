@@ -97,7 +97,7 @@ namespace Editor
             public string Style { get; set; }
             public bool Short { get; set; }
 
-            public static UserPersonalization Default => new UserPersonalization { Short = false, Style = "Friendly", Language = "English" };
+            public static UserPersonalization Default => new UserPersonalization { Short = true, Style = "Friendly", Language = "English" };
             public TableEntity MakeTableEntity(string userId) => 
                 new TableEntity(userId, "Personalization") 
                 { 
