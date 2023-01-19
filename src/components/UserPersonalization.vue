@@ -19,7 +19,7 @@ onMounted(GetUserPersonalization)
 
 function GetUserPersonalization()
 {
-  axios.get("api/GetUserPersonalization")
+  axios.get("api/UserPersonalization")
     .then(response => {
       if (response.status == 200) {
         personalization.short = response.data.short;
@@ -38,7 +38,7 @@ function GetUserPersonalization()
 
 function save() {
   axios
-    .post("api/SaveUserPersonalization", personalization)
+    .post("api/UserPersonalization", personalization)
     .catch();
   emit('close');
 }

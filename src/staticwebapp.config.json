@@ -1,7 +1,7 @@
 {
     "routes": [
         {
-            "route": "api/*UserPersonalization",
+            "route": "api/UserPersonalizationQ*",
             "allowedRoles": ["authenticated"]
         }
     ],

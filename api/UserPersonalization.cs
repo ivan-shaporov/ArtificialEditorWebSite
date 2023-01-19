@@ -14,8 +14,8 @@ namespace Editor
 {
     public static class UserPersonalizationApi
     {
-        [FunctionName("GetUserPersonalization")]
-        public static async Task<IActionResult> RunGetUserPersonalization(
+        [FunctionName("UserPersonalization")]
+        public static async Task<IActionResult> RunUserPersonalizationGet(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -44,16 +44,16 @@ namespace Editor
             });
         }
 
-        [FunctionName("PingUserPersonalization")]
-        public static IActionResult RunPingUserPersonalization(
+        [FunctionName("UserPersonalizationPing")]
+        public static IActionResult RunUserPersonalizationPing(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
             return new OkObjectResult("OK");
         }
 
-        [FunctionName("SaveUserPersonalization")]
-        public static async Task<IActionResult> RunSaveUserPersonalization(
+        [FunctionName("UserPersonalization")]
+        public static async Task<IActionResult> RunUserPersonalizationSave(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
