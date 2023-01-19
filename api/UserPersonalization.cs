@@ -14,9 +14,17 @@ namespace Editor
 {
     public static class UserPersonalizationApi
     {
-        [FunctionName("UserPersonalization")]
-        public static async Task<IActionResult> RunUserPersonalizationGet(
+        [FunctionName("UserPersonalizationPing")]
+        public static IActionResult RunUserPersonalizationPing(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            return new OkObjectResult("OK");
+        }
+
+        [FunctionName("UserPersonalization")]
+        public static async Task<IActionResult> RunUserPersonalization(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             var principal = StaticWebAppsAuth.Parse(req);
@@ -25,10 +33,29 @@ namespace Editor
             {
                 return new UnauthorizedResult();
             }
-
-            var table = await GetTableClient();
             
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var table = await GetTableClient();
+
+            string method = req.Method.ToLowerInvariant();
+
+            if (method == "get")
+            {
+                return await GetUserPersonalization(table, userId);
+            }
+            else if (method == "post")
+            {
+                return await UserPersonalizationSave(req, table, userId);
+            }
+            else
+            {
+                return new BadRequestObjectResult($"Method '{req.Method}' not supported");
+            }
+        }
+
+        private static async Task<OkObjectResult> GetUserPersonalization(TableClient table, string userId)
+        {
             var record = await table.GetEntityIfExistsAsync<TableEntity>(userId, "Personalization");
 
             if (!record.HasValue)
@@ -44,40 +71,19 @@ namespace Editor
             });
         }
 
-        [FunctionName("UserPersonalizationPing")]
-        public static IActionResult RunUserPersonalizationPing(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log)
+        public static async Task<IActionResult> UserPersonalizationSave(HttpRequest req, TableClient table, string userId)
         {
-            return new OkObjectResult("OK");
-        }
-
-        [FunctionName("UserPersonalization")]
-        public static async Task<IActionResult> RunUserPersonalizationSave(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            var principal = StaticWebAppsAuth.Parse(req);
-
-            if (!principal.IsInRole("authenticated"))
-            {
-                return new UnauthorizedResult();
-            }
-
             var maxLength = 100;
             var buffer = new char[maxLength];
             int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxLength);
             
             if (length >= maxLength)
             {
-                return new BadRequestResult();
+                return new BadRequestObjectResult("Request too long");
             }
 
             var request = JsonConvert.DeserializeObject<UserPersonalization>(new string(buffer));
 
-            var table = await GetTableClient();
-
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
             var entity = new TableEntity(userId, "Personalization")
             {
                 { "Language", request.Language},
