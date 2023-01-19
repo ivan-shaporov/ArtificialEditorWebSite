@@ -39,6 +39,7 @@ var isPersonalizationVisible = ref(false);
 </template>
 
 <style scoped>
+@import url(https://fonts.googleapis.com/css?family=Handlee);
 #toolbar {
     line-height: 12px;
     width: 25px;
@@ -103,6 +104,6 @@ var isPersonalizationVisible = ref(false);
   box-sizing: border-box;
   z-index: 1;
   resize: none;
-  margin-top: 0px;
+  margin-top: 6px;
 }
 </style>
