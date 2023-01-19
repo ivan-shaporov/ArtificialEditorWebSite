@@ -46,7 +46,7 @@ namespace Editor
             }
             else if (method == "post")
             {
-                return await UserPersonalizationSave(req, table, userId);
+                return await SaveUserPersonalization(req, table, userId);
             }
             else
             {
@@ -58,20 +58,12 @@ namespace Editor
         {
             var record = await table.GetEntityIfExistsAsync<TableEntity>(userId, "Personalization");
 
-            if (!record.HasValue)
-            {
-                return new OkObjectResult(new { Short = false, Style = "Friendly", Language = "English" });
-            }
+            var result = record.HasValue ? (UserPersonalization)record.Value: UserPersonalization.Default;
 
-            return new OkObjectResult(new 
-            { 
-                Short = record.Value.GetBoolean("Short"),
-                Style = record.Value.GetString("Style"),
-                Language = record.Value.GetString("Language")
-            });
+            return new OkObjectResult(result);
         }
 
-        public static async Task<IActionResult> UserPersonalizationSave(HttpRequest req, TableClient table, string userId)
+        public static async Task<IActionResult> SaveUserPersonalization(HttpRequest req, TableClient table, string userId)
         {
             var maxLength = 100;
             var buffer = new char[maxLength];
@@ -84,14 +76,10 @@ namespace Editor
 
             var request = JsonConvert.DeserializeObject<UserPersonalization>(new string(buffer));
 
-            var entity = new TableEntity(userId, "Personalization")
-            {
-                { "Language", request.Language},
-                { "Style", request.Style},
-                { "Short", request.Short},
-            };
+            var entity = request.MakeTableEntity(userId);
 
             await table.UpsertEntityAsync(entity);
+
             return new OkResult();
         }
 
@@ -108,6 +96,22 @@ namespace Editor
             public string Language { get; set; }
             public string Style { get; set; }
             public bool Short { get; set; }
+
+            public static UserPersonalization Default => new UserPersonalization { Short = false, Style = "Friendly", Language = "English" };
+            public TableEntity MakeTableEntity(string userId) => 
+                new TableEntity(userId, "Personalization") 
+                { 
+                    { "Language", Language},
+                    { "Style", Style},
+                    { "Short", Short},
+                };
+
+            public static explicit operator UserPersonalization(TableEntity record) => new UserPersonalization 
+            { 
+                Short = record.GetBoolean("Short") ?? false,
+                Style = record.GetString("Style"),
+                Language = record.GetString("Language")
+            };
         }
     }
 }
