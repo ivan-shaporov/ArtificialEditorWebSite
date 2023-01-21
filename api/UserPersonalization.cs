@@ -55,7 +55,7 @@ namespace Editor
             else if (method == "delete")
             {
                 var oktaDomain = "virtueditor.com";
-                log.LogDebug($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
+                log.LogTrace($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
                 return await DeleteUserPersonalization(table, userId);
             }
             else
