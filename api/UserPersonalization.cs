@@ -103,7 +103,7 @@ namespace Editor
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SSWS", oktaToken);
 
-            await httpClient.DeleteAsync($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
+            //await httpClient.DeleteAsync($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
 
             return new OkResult();
         }
