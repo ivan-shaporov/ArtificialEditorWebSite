@@ -27,7 +27,7 @@ namespace Editor
 
         [FunctionName("UserPersonalization")]
         public static async Task<IActionResult> RunUserPersonalization(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", "delete", Route = null)] HttpRequest req,
             ILogger log)
         {
             var principal = StaticWebAppsAuth.Parse(req);
@@ -42,8 +42,6 @@ namespace Editor
             var table = await GetTableClient();
 
             string method = req.Method.ToLowerInvariant();
-
-            log.LogInformation($"UserPersonalization request {method}");
 
             if (method == "get")
             {
