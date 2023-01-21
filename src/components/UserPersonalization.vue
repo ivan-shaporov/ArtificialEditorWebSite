@@ -79,6 +79,9 @@ function cancel() {
         <footer class="modal-footer">
           <span v-if="!props.clientPrincipal">
             <a href=".auth/login/okta">Login</a> for personalization.
+          </span>
+          <span v-else>
+            <a href=".auth/logout">Logout</a>.
           </span>&nbsp;
           <button type="button" @click="save" :disabled="!props.clientPrincipal">Save</button>&nbsp;
           <button type="button" @click="cancel">Cancel</button>
