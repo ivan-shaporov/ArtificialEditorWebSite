@@ -46,7 +46,9 @@ function save() {
 function deleteUser() {
   axios
     .delete("api/UserPersonalization")
-    .then(() => {emit('close');})
+    .then(() => {
+      window.location.href = "/.auth/logout";
+    })
     .catch();  
 }
 

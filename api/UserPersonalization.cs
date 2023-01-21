@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Azure.Data.Tables;
 using System.Security.Claims;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Editor
 {
@@ -93,11 +94,14 @@ namespace Editor
         public static async Task<IActionResult> DeleteUserPersonalization(TableClient table, string userId)
         {
             await table.DeleteEntityAsync(userId, "Personalization");
-            await table.DeleteEntityAsync(userId, "Personalization"); // test failures
 
             var oktaDomain = "virtualeditor.com";
 
-            //await httpClient.DeleteAsync($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
+            var oktaToken = Environment.GetEnvironmentVariable("OKTA_API_TOKEN");
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SSWS", oktaToken);
+
+            await httpClient.DeleteAsync($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
 
             return new OkResult();
         }
