@@ -87,7 +87,7 @@ function cancel() {
         </section>
         <footer class="modal-footer">
           <span v-if="!props.clientPrincipal">
-            <a href=".auth/login/okta">Login</a> for personalization.
+            <a href=".auth/login/okta">Login or register</a> for personalization.
           </span>
           <span v-else>
             <a href=".auth/logout">Logout</a>.
