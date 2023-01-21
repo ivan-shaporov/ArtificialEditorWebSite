@@ -21,7 +21,7 @@
                             "clientSecretSettingName": "OKTA_SECRET"
                         },
                         "openIdConnectConfiguration": {
-                            "wellKnownOpenIdConfiguration": "https://dev-98041743.okta.com/.well-known/openid-configuration"
+                            "wellKnownOpenIdConfiguration": "https://login.virtueditor.com/.well-known/openid-configuration"
                         }
                     },
                     "login": {
