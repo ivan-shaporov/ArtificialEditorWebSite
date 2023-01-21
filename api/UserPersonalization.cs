@@ -9,11 +9,14 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Data.Tables;
 using System.Security.Claims;
+using System.Net.Http;
 
 namespace Editor
 {
     public static class UserPersonalizationApi
     {
+        private static readonly HttpClient httpClient = new HttpClient();
+
         [FunctionName("UserPersonalizationPing")]
         public static IActionResult RunUserPersonalizationPing(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
@@ -48,6 +51,10 @@ namespace Editor
             {
                 return await SaveUserPersonalization(req, table, userId);
             }
+            else if (method == "delete")
+            {
+                return await DeleteUserPersonalization(table, userId);
+            }
             else
             {
                 return new BadRequestObjectResult($"Method '{req.Method}' not supported");
@@ -79,6 +86,18 @@ namespace Editor
             var entity = request.MakeTableEntity(userId);
 
             await table.UpsertEntityAsync(entity);
+
+            return new OkResult();
+        }
+
+        public static async Task<IActionResult> DeleteUserPersonalization(TableClient table, string userId)
+        {
+            await table.DeleteEntityAsync(userId, "Personalization");
+            await table.DeleteEntityAsync(userId, "Personalization"); // test failures
+
+            var oktaDomain = "virtualeditor.com";
+
+            //await httpClient.DeleteAsync($"https://${oktaDomain}/api/v1/users/{userId}?sendEmail=true");
 
             return new OkResult();
         }

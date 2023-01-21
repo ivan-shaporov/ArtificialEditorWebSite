@@ -43,6 +43,13 @@ function save() {
   emit('close');
 }
 
+function deleteUser() {
+  axios
+    .delete("api/UserPersonalization")
+    .then(() => {emit('close');})
+    .catch();  
+}
+
 function cancel() {
   GetUserPersonalization();
   emit('close');
@@ -85,6 +92,9 @@ function cancel() {
           </span>&nbsp;
           <button type="button" @click="save" :disabled="!props.clientPrincipal">Save</button>&nbsp;
           <button type="button" @click="cancel">Cancel</button>
+        </footer>
+        <footer class="modal-footer">
+            <button v-if="props.clientPrincipal" type="button" @click="deleteUser">Delete Accout</button>
         </footer>
       </div>
     </div>
