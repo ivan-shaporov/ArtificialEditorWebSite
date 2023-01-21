@@ -31,11 +31,9 @@ var isPersonalizationVisible = ref(false);
         <div class="paper-content">
             <textarea autofocus maxlength="1000" rows="20" cols="100" id="draft" :placeholder="placeholder" v-model="value"/>
         </div>
-<!-- 
         <div id="toolbar">
             <span class="bi-gear" @click="isPersonalizationVisible = true" title="Personalize"></span>&nbsp;
         </div>
--->
     </div>
     <UserPersonalization v-show="isPersonalizationVisible" @close="isPersonalizationVisible = false" :clientPrincipal="props.clientPrincipal"/>
 </template>
