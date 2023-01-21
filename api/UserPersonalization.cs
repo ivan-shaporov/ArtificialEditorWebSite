@@ -51,10 +51,10 @@ namespace Editor
             {
                 return await SaveUserPersonalization(req, table, userId);
             }
-            else if (method == "delete")
+            /*else if (method == "delete")
             {
                 return await DeleteUserPersonalization(table, userId);
-            }
+            }*/
             else
             {
                 return new BadRequestObjectResult($"Method '{req.Method}' not supported");
