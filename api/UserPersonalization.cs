@@ -95,7 +95,7 @@ namespace Editor
         {
             await table.DeleteEntityAsync(userId, "Personalization");
 
-            var oktaDomain = "virtualeditor.com";
+            var oktaDomain = "virtueditor.com";
 
             var oktaToken = Environment.GetEnvironmentVariable("OKTA_API_TOKEN");
 
