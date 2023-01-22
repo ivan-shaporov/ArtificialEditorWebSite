@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Azure.Data.Tables;
 using OpenApi;
 using System.Security.Claims;
-using static Editor.UserPersonalizationApi;
 
 namespace Editor
 {
@@ -22,6 +21,8 @@ namespace Editor
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            var principal = StaticWebAppsAuth.Parse(req);
+            
             int maxRequestTextLength = int.Parse(Environment.GetEnvironmentVariable("MaxRequestTextLength"));
             var overlength = 100;
             var buffer = new char[maxRequestTextLength + overlength];
@@ -53,8 +54,6 @@ namespace Editor
             string prefix = Environment.GetEnvironmentVariable("Prefix");
             //Rewrite the following into a {Short} {Style} {Target} in {Language} language:\n\n
 
-            var principal = StaticWebAppsAuth.Parse(req);
-            
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             log.LogDebug($"userId: '{userId}'");
