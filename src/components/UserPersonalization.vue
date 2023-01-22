@@ -20,7 +20,7 @@ onMounted(GetUserPersonalization)
 
 function GetUserPersonalization()
 {
-  axios.get("api/UserPersonalization")
+  axios.get("api/UserPersonalization", {maxRedirects: 0})
     .then(response => {
       if (response.status == 200) {
         personalization.short = response.data.short;
