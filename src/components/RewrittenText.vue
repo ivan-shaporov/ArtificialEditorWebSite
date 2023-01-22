@@ -9,11 +9,8 @@ async function copyRewritten() {
 
 <template>
   <div class="container">
-    <div id="rewritten" class="paper-shadow">{{ text }}>
-    </div>
-    <div id="toolbar">
-      <span class="bi-clipboard" @click="copyRewritten" title="Copy"></span>
-    </div>
+    <div id="rewritten" class="paper-shadow">{{ text }}</div>
+    <div id="toolbar"><span class="bi-clipboard" @click="copyRewritten" title="Copy"></span></div>
   </div>
 </template>
 
