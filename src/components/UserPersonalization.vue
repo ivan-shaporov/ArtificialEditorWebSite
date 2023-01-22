@@ -7,14 +7,14 @@ const emit = defineEmits(['close'])
 
 const styles = ["Friendly", "Busines", "Formal"]
 
-const defaultPersonaliztion = {
+var lastPersonaliztion = {
   short: true,
   style: styles[0],
   target: "e-mail",
   language: "English",
 }
 
-const personalization = reactive(structuredClone(defaultPersonaliztion));
+const personalization = reactive(structuredClone(lastPersonaliztion));
 
 onMounted(GetUserPersonalization)
 
@@ -27,6 +27,7 @@ function GetUserPersonalization()
         personalization.style = response.data.style;
         personalization.target = response.data.target;
         personalization.language = response.data.language;
+        Object.assign(lastPersonaliztion, personalization);
       }
       else {
         console.log("cannot GetUserPersonalization "+ response.status)
@@ -34,14 +35,16 @@ function GetUserPersonalization()
     })
     .catch((err) => {
       console.error("cannot GetUserPersonalization "+ err)
-      Object.assign(personalization, defaultPersonaliztion);
     });
 }
 
 function save() {
   axios
     .post("api/UserPersonalization", personalization)
-    .catch();
+    .catch((err) => {
+      Object.assign(personalization, lastPersonaliztion);
+      console.error("cannot SaveUserPersonalization "+ err)
+    });
   emit('close');
 }
 
@@ -55,7 +58,7 @@ function deleteUser() {
 }
 
 function cancel() {
-  GetUserPersonalization();
+  Object.assign(personalization, lastPersonaliztion);
   emit('close');
 }
 </script>
