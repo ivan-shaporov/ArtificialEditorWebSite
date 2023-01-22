@@ -54,7 +54,7 @@ namespace Editor
             string prefix = Environment.GetEnvironmentVariable("Prefix");
             //Rewrite the following into a {Short} {Style} {Target} in {Language} language:\n\n
 
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             log.LogDebug($"userId: '{userId}'");
 
