@@ -40,6 +40,7 @@ var isPersonalizationVisible = ref(false);
 
 <style scoped>
 @import url(https://fonts.googleapis.com/css?family=Handlee);
+
 #toolbar {
     line-height: 12px;
     width: 25px;

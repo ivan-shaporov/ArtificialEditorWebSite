@@ -8,8 +8,8 @@ async function copyRewritten() {
 </script>
 
 <template>
-  <div>
-    <div id="rewritten" class="paper-shadow">{{ text }}
+  <div class="container">
+    <div id="rewritten" class="paper-shadow">{{ text }}>
     </div>
     <div id="toolbar">
       <span class="bi-clipboard" @click="copyRewritten" title="Copy"></span>
@@ -18,6 +18,10 @@ async function copyRewritten() {
 </template>
 
 <style scoped>
+.container {
+  width: 665px;
+}
+
 #toolbar {
      line-height: 12px;
      width: 25px;
