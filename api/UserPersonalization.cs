@@ -62,6 +62,22 @@ namespace Editor
             }
         }
 
+        public static async Task<UserPersonalization> GetUserPersonalization(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return UserPersonalization.Default;
+            }
+
+            var table = await GetTableClient();
+
+            var record = await table.GetEntityIfExistsAsync<TableEntity>(userId, "Personalization");
+
+            var result = record.HasValue ? (UserPersonalization)record.Value: UserPersonalization.Default;
+
+            return result;
+        }
+
         private static async Task<OkObjectResult> GetUserPersonalization(TableClient table, string userId)
         {
             var record = await table.GetEntityIfExistsAsync<TableEntity>(userId, "Personalization");
@@ -117,26 +133,36 @@ namespace Editor
             return client;
         }
 
-        class UserPersonalization
+        public class UserPersonalization
         {
-            public string Language { get; set; }
-            public string Style { get; set; }
             public bool Short { get; set; }
+            public string Style { get; set; }
+            public string Target { get; set; }
+            public string Language { get; set; }
 
-            public static UserPersonalization Default => new UserPersonalization { Short = true, Style = "Friendly", Language = "English" };
+            public static UserPersonalization Default => new UserPersonalization 
+            { 
+                Short = true,
+                Style = "Friendly",
+                Target = "e-mail",
+                Language = "English" 
+            };
+
             public TableEntity MakeTableEntity(string userId) => 
                 new TableEntity(userId, "Personalization") 
                 { 
-                    { "Language", Language},
-                    { "Style", Style},
                     { "Short", Short},
+                    { "Target", Target},
+                    { "Style", Style},
+                    { "Language", Language},
                 };
 
             public static explicit operator UserPersonalization(TableEntity record) => new UserPersonalization 
             { 
                 Short = record.GetBoolean("Short") ?? false,
-                Style = record.GetString("Style"),
-                Language = record.GetString("Language")
+                Style = record.GetString("Style") ?? "Friendly",
+                Target = record.GetString("Target") ?? "e-mail",
+                Language = record.GetString("Language") ?? "English",
             };
         }
     }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Data.Tables;
 using OpenApi;
+using System.Security.Claims;
+using static Editor.UserPersonalizationApi;
 
 namespace Editor
 {
@@ -49,6 +51,21 @@ namespace Editor
             };
 
             string prefix = Environment.GetEnvironmentVariable("Prefix");
+            //Rewrite the following into a {Short} {Style} {Target} in {Language} language:\n\n
+
+            var principal = StaticWebAppsAuth.Parse(req);
+            
+            var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            log.LogDebug("userId: '{userId}'");
+
+            var personalization = await UserPersonalizationApi.GetUserPersonalization(userId);
+
+            prefix = prefix
+                .Replace("{Short}", personalization.Short ? "short" : "")
+                .Replace("{Style}", personalization.Style)
+                .Replace("{Target}", personalization.Target)
+                .Replace("{Language}", personalization.Language);
 
             bool stub = bool.TryParse(Environment.GetEnvironmentVariable("UseStub"), out stub) ? stub : false;
 

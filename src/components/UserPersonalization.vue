@@ -10,6 +10,7 @@ const styles = ["Friendly", "Busines", "Formal"]
 const defaultPersonaliztion = {
   short: true,
   style: styles[0],
+  target: "e-mail",
   language: "English",
 }
 
@@ -24,6 +25,7 @@ function GetUserPersonalization()
       if (response.status == 200) {
         personalization.short = response.data.short;
         personalization.style = response.data.style;
+        personalization.target = response.data.target;
         personalization.language = response.data.language;
       }
       else {
@@ -77,7 +79,11 @@ function cancel() {
               </td>
             </tr>
             <tr>
-              <td>Result Language:</td>
+              <td>Target:</td>
+              <td><input v-model.trim="personalization.target"/></td>
+            </tr>
+            <tr>
+              <td>Target Language:</td>
               <td>
                 <input v-model.trim="personalization.language"/>
                 (experimental <i class="bi bi-info-circle warning" title="Not all languages work equaly well"></i>)
