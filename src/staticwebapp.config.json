@@ -5,12 +5,12 @@
             "allowedRoles": ["authenticated"]
         }
     ],
-    "responseOverrides": {
+    /*"responseOverrides": { this forces api calls also to be redirected
         "401": {
             "statusCode": 302,
             "redirect": "/.auth/login/aad"
         }
-    },
+    },*/
     "auth": {
         "identityProviders": {
             "customOpenIdConnectProviders": {
