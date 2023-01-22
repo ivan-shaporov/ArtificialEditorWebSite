@@ -95,14 +95,16 @@ namespace Editor
         {
             await table.DeleteEntityAsync(userId, "Personalization");
 
-            var oktaDomain = "login.virtueditor.com";
-            //var oktaDomain = "dev-98041743.okta.com";
+            var oktaDomain = Environment.GetEnvironmentVariable("OKTA_DOMAIN");
 
             var oktaToken = Environment.GetEnvironmentVariable("OKTA_API_TOKEN");
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("SSWS", oktaToken);
 
-            await httpClient.DeleteAsync($"https://{oktaDomain}/api/v1/users/{userId}?sendEmail=true");
+            var url = new Uri($"https://{oktaDomain}/api/v1/users/{userId}?sendEmail=true");
+
+            await httpClient.DeleteAsync(url);
+            await httpClient.DeleteAsync(url);
 
             return new OkResult();
         }
