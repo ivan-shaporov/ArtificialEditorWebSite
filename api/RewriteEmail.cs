@@ -57,7 +57,7 @@ namespace Editor
             
             var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            log.LogDebug("userId: '{userId}'");
+            log.LogDebug($"userId: '{userId}'");
 
             var personalization = await UserPersonalizationApi.GetUserPersonalization(userId);
 
