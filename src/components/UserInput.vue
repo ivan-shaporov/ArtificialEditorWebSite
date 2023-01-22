@@ -52,6 +52,7 @@ var isPersonalizationVisible = ref(false);
     top:0;
     right:0;
     cursor: pointer;
+    color: black;
 }
 
 /* https://codepen.io/MarcMalignan/pen/QbaXGg */

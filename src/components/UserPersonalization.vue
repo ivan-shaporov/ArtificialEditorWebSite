@@ -136,6 +136,7 @@ function cancel() {
     justify-content: center;
     align-items: center;
     z-index: 1;
+    color: black;
   }
 
   .modal {

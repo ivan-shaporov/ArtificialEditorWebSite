@@ -30,6 +30,7 @@ async function copyRewritten() {
      top:0;
      right:0;
      cursor: pointer;
+     color: black;
  }
 
 /* https://codepen.io/AlHakem/pen/BxXrKe */
