@@ -47,9 +47,9 @@ function getClientPrincipal() {
       clientPrincipal.value = response.data.clientPrincipal;
       if (response.data.clientPrincipal) {
         var expiration = response.data.clientPrincipal.claims.filter((c: {typ: string}) => c.typ === "exp")[0]?.val;
-        var now = new Date().getTime();
-        console.log(`interval: ${expiration}, now:${now}, dt:${expiration - now}`);
-        //setTimeout(getClientPrincipal, date());
+        var interval = expiration - new Date().getTime() / 1000;
+        console.log(`expiration: ${expiration}, interval:${interval}`);
+        setTimeout(getClientPrincipal, interval);
       }
       else {
         console.log('auth not available');
