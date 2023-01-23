@@ -83,7 +83,7 @@ function cancel() {
             </tr>
             <tr>
               <td>Target:</td>
-              <td><input v-model.trim="personalization.target"/></td>
+              <td><input v-model.trim="personalization.target"/>&nbsp;tweet, blog post, etc.</td>
             </tr>
             <tr>
               <td>Target Language:</td>
