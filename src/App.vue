@@ -41,13 +41,19 @@ onMounted(() => {
 })
 
 function getClientPrincipal() {
+  console.log('requesting auth');
   axios.get(".auth/me")
     .then(response => {
       clientPrincipal.value = response.data.clientPrincipal;
-      var expiration = response.data.claims.filter((c: {typ: string}) => c.typ === "exp")[0]?.val;
-      var now = new Date().getTime();
-      console.log(`interval: ${expiration}, now:${now}, dt:${expiration - now}`);
-      //setTimeout(getClientPrincipal, date());
+      if (response.data.clientPrincipal) {
+        var expiration = response.data.clientPrincipal.claims.filter((c: {typ: string}) => c.typ === "exp")[0]?.val;
+        var now = new Date().getTime();
+        console.log(`interval: ${expiration}, now:${now}, dt:${expiration - now}`);
+        //setTimeout(getClientPrincipal, date());
+      }
+      else {
+        console.log('auth not available');
+      }
     })
     .catch(() => clientPrincipal.value = "");
 }
