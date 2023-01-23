@@ -37,12 +37,20 @@ const allowLog = ref(false);
 const clientPrincipal = ref("");
 
 onMounted(() => {
+  getClientPrincipal();
+})
+
+function getClientPrincipal() {
   axios.get(".auth/me")
     .then(response => {
       clientPrincipal.value = response.data.clientPrincipal;
+      var expiration = response.data.claims.filter((c: {typ: string}) => c.typ === "exp")[0]?.val;
+      var now = new Date().getTime();
+      console.log(`interval: ${expiration}, now:${now}, dt:${expiration - now}`);
+      //setTimeout(getClientPrincipal, date());
     })
     .catch(() => clientPrincipal.value = "");
-})
+}
 
 async function rewrite(): Promise<void> {
   if (draft.value.length == 0) {
