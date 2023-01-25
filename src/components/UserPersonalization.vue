@@ -7,18 +7,24 @@ const emit = defineEmits(['close'])
 
 const styles = ["Friendly", "Busines", "Formal"]
 
-var lastPersonaliztion = {
+var defaultPersonaliztion = {
   short: true,
   style: styles[0],
   target: "e-mail",
   language: "English",
 }
 
+var lastPersonaliztion = structuredClone(defaultPersonaliztion);
+
 const personalization = reactive(structuredClone(lastPersonaliztion));
 
-watch(() => props.clientPrincipal, (newPrincipal, oldPrincipal) => {
-  if (!oldPrincipal && newPrincipal) {
+watch(() => props.clientPrincipal, (newPrincipal) => {
+  if (newPrincipal) {
     GetUserPersonalization();
+  }
+  else {
+    Object.assign(lastPersonaliztion, defaultPersonaliztion);
+    Object.assign(personalization, lastPersonaliztion);
   }
 });
 
