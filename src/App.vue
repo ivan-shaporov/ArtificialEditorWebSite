@@ -45,7 +45,7 @@ function getClientPrincipal() {
     .then(response => {
       clientPrincipal.value = response.data.clientPrincipal;
       if (response.data.clientPrincipal) {
-        setTimeout(getClientPrincipal, 60000);
+        setTimeout(getClientPrincipal, 3600000);
       }
     })
     .catch(() => clientPrincipal.value = "");
