@@ -77,8 +77,6 @@ namespace Editor
 
             await StoreRewriteLog(partition, id, prefix, request, completion);
 
-            log.LogMetric("rewrite", 1);
-
             return new OkObjectResult(new {Partition = partition, Id = id, Text = completion.Text });
         }
 
