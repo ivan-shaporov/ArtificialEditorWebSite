@@ -30,6 +30,7 @@ namespace Editor
             
             if (length >= maxRequestTextLength + overlength)
             {
+                log.LogMetric("RequestTooLong", 1);
                 return new OkObjectResult(new { Text = "Your request is too long. Try a shorter one." });
             }
 
@@ -37,12 +38,13 @@ namespace Editor
             
             if (request == null)
             {
-                log.LogWarning("request is null.");
+                log.LogError("request is null.");
                 return new BadRequestResult();
             }
             
             if (request.Text.Length > maxRequestTextLength)
             {
+                log.LogMetric("RequestTooLong", 1);
                 return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
             }
 
