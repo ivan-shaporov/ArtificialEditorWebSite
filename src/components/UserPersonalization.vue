@@ -18,7 +18,7 @@ const personalization = reactive(structuredClone(lastPersonaliztion));
 
 onMounted(GetUserPersonalization)
 
-watch(props.clientPrincipal, (newPrincipal, oldPrincipal) => {
+watch(() => props.clientPrincipal, (newPrincipal, oldPrincipal) => {
   if (!oldPrincipal && newPrincipal) {
     console.log('new principal appeared');
   }
