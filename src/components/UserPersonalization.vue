@@ -20,6 +20,9 @@ onMounted(GetUserPersonalization)
 
 function GetUserPersonalization()
 {
+  if(!props.clientPrincipal){
+    return;
+  }
   axios.get("api/UserPersonalization")
     .then(response => {
       if (response.status == 200) {
