@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, watch } from "vue";
 import axios from "axios";
 
 const props = defineProps(["modelValue", "clientPrincipal"])
@@ -17,6 +17,12 @@ var lastPersonaliztion = {
 const personalization = reactive(structuredClone(lastPersonaliztion));
 
 onMounted(GetUserPersonalization)
+
+watch(props.clientPrincipal, (newPrincipal, oldPrincipal) => {
+  if (!oldPrincipal && newPrincipal) {
+    console.log('new principal appeared');
+  }
+});
 
 function GetUserPersonalization()
 {
