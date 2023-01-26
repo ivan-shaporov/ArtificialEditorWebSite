@@ -18,11 +18,11 @@ var lastPersonaliztion = structuredClone(defaultPersonaliztion);
 
 const personalization = reactive(structuredClone(lastPersonaliztion));
 
-watch(() => props.clientPrincipal, (newPrincipal) => {
-  if (newPrincipal) {
+watch(() => props.clientPrincipal, (newPrincipal, oldPrincipal) => {
+  if (!oldPrincipal && newPrincipal) {
     GetUserPersonalization();
   }
-  else {
+  else if (!newPrincipal) {
     Object.assign(lastPersonaliztion, defaultPersonaliztion);
     Object.assign(personalization, lastPersonaliztion);
   }
