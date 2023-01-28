@@ -32,7 +32,7 @@ var isPersonalizationVisible = ref(false);
             <textarea autofocus maxlength="1000" rows="20" cols="100" id="draft" :placeholder="placeholder" v-model="value"/>
         </div>
         <div id="toolbar">
-            <span class="bi-gear" @click="isPersonalizationVisible = true" title="Personalize"></span>&nbsp;
+          <a href="#" @click="isPersonalizationVisible = true" title="Personalize">settings</a>&nbsp;
         </div>
     </div>
     <UserPersonalization v-show="isPersonalizationVisible" @close="isPersonalizationVisible = false" :clientPrincipal="props.clientPrincipal"/>
@@ -43,10 +43,10 @@ var isPersonalizationVisible = ref(false);
 
 #toolbar {
     line-height: 12px;
-    width: 25px;
+    width: 60px;
     font-size: 12pt;
     font-family: tahoma;
-    margin-top: 0px;
+    margin-top: 15px;
     margin-right: 10px;
     position:absolute;
     top:0;
@@ -54,6 +54,8 @@ var isPersonalizationVisible = ref(false);
     cursor: pointer;
     color: black;
 }
+
+#toolbar a:link, #toolbar a:visited { color:#0000EE; }
 
 /* https://codepen.io/MarcMalignan/pen/QbaXGg */
 .paper {
