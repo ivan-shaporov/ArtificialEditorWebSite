@@ -109,7 +109,7 @@ async function reportProblem() {
     <div>I am Artificial Intelligence that can rewrite e-mails for you. Given the text below:</div>
     <UserInput v-model="draft" :clientPrincipal="clientPrincipal"/>
     
-    <div>
+    <div class="controls">
       (allow reading by humans for improving the service <input id="allowLog" type="checkbox" v-model="allowLog" />)
       <input type="button" value="Rewrite" id="btnRewrite" @click="rewrite" :disabled="!rewriteEnabled" /> &nbsp;
       <input type="button" value="Report problem" id="btnReportProblem" @click="reportProblem" :disabled="!reportEnabled" />
@@ -119,3 +119,9 @@ async function reportProblem() {
     <RewrittenText :text="rewritten.text"/>
   </main>
 </template>
+
+<style scoped>
+.controls {
+  margin-top: 5px;
+}
+</style>
