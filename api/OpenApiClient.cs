@@ -82,7 +82,7 @@ namespace OpenApi
         internal Completion(OpenApiClient.OpenApiResponse response)
         {
             Id = response?.Id;
-            Text = response?.Choices.FirstOrDefault()?.Text;
+            Text = response?.Choices.FirstOrDefault()?.Text.Trim();
             PromptTokens = response?.Usage.Prompt_tokens ?? 0;
             CompletionTokens = response?.Usage.Completion_tokens ?? 0;
             TotalTokens = response?.Usage.Total_tokens ?? 0;
