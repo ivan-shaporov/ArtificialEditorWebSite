@@ -28,9 +28,7 @@ var isPersonalizationVisible = ref(false);
 
 <template>
     <div class="paper">
-        <div class="paper-content">
-            <textarea autofocus maxlength="1000" rows="20" cols="100" id="draft" :placeholder="placeholder" v-model="value"/>
-        </div>
+        <textarea autofocus maxlength="1000" rows="20" cols="100" id="draft" :placeholder="placeholder" v-model="value"/>
         <div id="toolbar">
           <a href="#" @click="isPersonalizationVisible = true" title="Personalize">settings</a>&nbsp;
         </div>
@@ -81,21 +79,12 @@ var isPersonalizationVisible = ref(false);
   box-sizing: border-box;
 }
 
-.paper-content {
+.paper textarea {
   position: absolute;
   top: 30px;
   right: 0;
   bottom: 30px;
   left: 60px;
-  /*background: linear-gradient(transparent, transparent 28px, #91d1d3 28px);*/
-  background-size: 30px 30px;
-}
-
-.paper-content textarea {
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
-  max-height: 100%;
   line-height: 30px;
   padding: 0 10px;
   border: 0;
