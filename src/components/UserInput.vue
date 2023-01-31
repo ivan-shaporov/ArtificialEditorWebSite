@@ -98,8 +98,9 @@ var isPersonalizationVisible = ref(false);
   z-index: 1;
   resize: none;
   margin-top: 6px;
-  background: linear-gradient(transparent, transparent 28px, #91d1d3 28px);
+  background: linear-gradient(transparent, transparent 29px, #91d1d3 28px);
   background-size: 30px 30px;
+  background-position: 0px -7px;
   overflow-y: auto;
   background-attachment: local;
 }
