@@ -48,6 +48,8 @@ namespace Editor
                 return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
             }
 
+            request.Text = request.Text.Trim();
+
             var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"))
             {
                 MaxTokens = int.Parse(Environment.GetEnvironmentVariable("MaxCompletionTokens"))

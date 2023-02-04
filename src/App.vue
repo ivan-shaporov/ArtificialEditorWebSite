@@ -52,7 +52,8 @@ function getClientPrincipal() {
 }
 
 async function rewrite(): Promise<void> {
-  if (draft.value.length == 0) {
+  let draftText = draft.value.trim();
+  if (draftText.length == 0) {
     rewritten.text = defaultRewrite;
     return;
   }
@@ -60,7 +61,7 @@ async function rewrite(): Promise<void> {
   rewritten.text = "Let me think...";
   rewriteEnabled.value = false;
   const apiUrl = "api/RewriteEmail";
-  let data = { text: draft.value, allowLog: allowLog.value };
+  let data = { text: draftText, allowLog: allowLog.value };
   lastDraft = data.text;
 
   axios
