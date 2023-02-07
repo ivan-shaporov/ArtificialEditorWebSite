@@ -48,7 +48,7 @@ namespace Editor
                 return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
             }
 
-            request.Text = request.Text.Trim();
+            request.Text = request.Text.Trim() + "\n";
 
             var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"))
             {
