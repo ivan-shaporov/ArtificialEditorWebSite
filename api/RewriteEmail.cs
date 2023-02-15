@@ -50,7 +50,7 @@ namespace Editor
 
             request.Text = request.Text.Trim();
 
-            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"))
+            var client = new OpenApiClient(Environment.GetEnvironmentVariable("OpenApiKey"), log)
             {
                 MaxTokens = int.Parse(Environment.GetEnvironmentVariable("MaxCompletionTokens"))
             };
