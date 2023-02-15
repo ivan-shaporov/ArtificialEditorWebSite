@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -13,10 +15,14 @@ namespace OpenApi
         public int MaxTokens { get; set; } = 256;
         public Uri Url { get; set; } = new Uri("https://api.openai.com/v1/completions");
 
+        private readonly ILogger Log;
         private static readonly HttpClient client = new HttpClient();
 
-        public OpenApiClient(string key) => 
+        public OpenApiClient(string key, ILogger log)
+        {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", key);
+            Log = log;
+        }
 
         public Completion GenerateCompletionStub(string prompt) => new Completion(null)
         {
@@ -41,6 +47,15 @@ namespace OpenApi
             var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
             var reply = await client.PostAsync(Url, content);
+
+            Log.LogInformation($"GenerateCompletion API StatusCode: {reply.StatusCode}");
+
+            if (reply.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                await Task.Delay(1000);
+                reply = await client.PostAsync(Url, content);
+                Log.LogWarning($"GenerateCompletion API throttled, retry StatusCode: {reply.StatusCode}");
+            }
 
             reply.EnsureSuccessStatusCode();
 
