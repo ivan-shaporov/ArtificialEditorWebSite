@@ -31,7 +31,7 @@ namespace Editor
             if (length >= maxRequestTextLength + overlength)
             {
                 log.LogMetric("RequestTooLong", 1);
-                return new OkObjectResult(new { Text = "Your request is too long. Try a shorter one." });
+                return new OkObjectResult(MakeResultObject("Your request is too long. Try a shorter one."));
             }
 
             var request = JsonConvert.DeserializeObject<RewriteRequest>(new string(buffer));
@@ -45,7 +45,7 @@ namespace Editor
             if (request.Text.Length > maxRequestTextLength)
             {
                 log.LogMetric("RequestTooLong", 1);
-                return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
+                return new OkObjectResult(MakeResultObject("Your input is too long. Try a shorter one."));
             }
 
             request.Text = request.Text.Trim() + "\n";
@@ -81,7 +81,7 @@ namespace Editor
 
             await StoreRewriteLog(partition, id, prefix, request, completion);
 
-            return new OkObjectResult(new {Partition = partition, Id = id, Text = completion.Text });
+            return new OkObjectResult(MakeResultObject(partition: partition, id: id, text: completion.Text));
         }
 
         [FunctionName("Ping")]
@@ -101,35 +101,47 @@ namespace Editor
             var overlength = 100;
             var maxRequestLength = maxRequestTextLength * 11 + overlength;
             var buffer = new char[maxRequestLength];
-            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength + overlength);
+            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestLength);
             
             if (length >= maxRequestLength)
             {
-                return new BadRequestResult();
+                log.LogWarning("Request is too long.");
+                return new OkObjectResult(MakeResultObject("Your input is too long. Try a shorter one."));
             }
 
-            var request = JsonConvert.DeserializeObject<ReportProblemRequest>(new string(buffer));
+            var client = await GetTableClient();
+
+            ReportProblemRequest request = null;
+            var requestText = new string(buffer);
             
+            try
+            {
+                request = JsonConvert.DeserializeObject<ReportProblemRequest>(requestText);
+            }
+            catch (Exception x)
+            {
+                string requestId = Guid.NewGuid().ToString();
+                string partition = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+                var problemEntity = new TableEntity(partition, requestId);
+                problemEntity.Add("ProblemInput", requestText);
+                problemEntity.Add("Problemoutput", x.Message);
+
+                await client.UpsertEntityAsync(problemEntity);
+                return new OkResult();
+            }
+
             if (request == null)
             {
                 log.LogWarning("request is null.");
                 return new BadRequestResult();
             }
-            
-            if (request.Text.Length > maxRequestTextLength ||
-                request.Rewritten.Length > maxRequestTextLength * 10)
-            {
-                return new BadRequestResult();
-            }
 
-            var client = await GetTableClient();
             var entity = new TableEntity(request.Partition, request.Id);
             entity.Add("ProblemInput", request.Text);
             entity.Add("Problemoutput", request.Rewritten);
 
-            await client.UpdateEntityAsync(entity, Azure.ETag.All);
-
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            await client.UpsertEntityAsync(entity);
 
             return new OkResult();
         }
@@ -164,6 +176,13 @@ namespace Editor
 
             await client.UpsertEntityAsync(entity);
         }
+
+        private static object MakeResultObject(string text, string partition = null, string id = null) =>
+            new { 
+                    Partition = partition ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    Id = id ?? Guid.NewGuid().ToString(),
+                    Text = text 
+                };
 
         private static string Hash(string v) => $"{v.GetHashCode()}{new string(v.Reverse().ToArray()).GetHashCode()}";
     }
