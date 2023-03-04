@@ -101,7 +101,7 @@ namespace Editor
             var overlength = 100;
             var maxRequestLength = maxRequestTextLength * 11 + overlength;
             var buffer = new char[maxRequestLength];
-            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestTextLength + overlength);
+            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestLength);
             
             if (length >= maxRequestLength)
             {
@@ -134,20 +134,12 @@ namespace Editor
                 log.LogWarning("request is null.");
                 return new BadRequestResult();
             }
-            
-            if (request.Text.Length > maxRequestTextLength ||
-                request.Rewritten.Length > maxRequestTextLength * 10)
-            {
-                return new BadRequestResult();
-            }
 
             var entity = new TableEntity(request.Partition, request.Id);
             entity.Add("ProblemInput", request.Text);
             entity.Add("Problemoutput", request.Rewritten);
 
             await client.UpdateEntityAsync(entity, Azure.ETag.All);
-
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
             return new OkResult();
         }
