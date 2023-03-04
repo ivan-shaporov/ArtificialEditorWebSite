@@ -108,8 +108,27 @@ namespace Editor
                 return new BadRequestResult();
             }
 
-            var request = JsonConvert.DeserializeObject<ReportProblemRequest>(new string(buffer));
+            var client = await GetTableClient();
+
+            ReportProblemRequest request = null;
+            var requestText = new string(buffer);
             
+            try
+            {
+                request = JsonConvert.DeserializeObject<ReportProblemRequest>(requestText);
+            }
+            catch (Exception x)
+            {
+                string requestId = Guid.NewGuid().ToString();
+                string partition = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+                var problemEntity = new TableEntity(partition, requestId);
+                problemEntity.Add("ProblemInput", requestText);
+                problemEntity.Add("Problemoutput", x.Message);
+
+                await client.UpdateEntityAsync(problemEntity, Azure.ETag.All);
+            }
+
             if (request == null)
             {
                 log.LogWarning("request is null.");
@@ -122,7 +141,6 @@ namespace Editor
                 return new BadRequestResult();
             }
 
-            var client = await GetTableClient();
             var entity = new TableEntity(request.Partition, request.Id);
             entity.Add("ProblemInput", request.Text);
             entity.Add("Problemoutput", request.Rewritten);
