@@ -141,7 +141,7 @@ namespace Editor
             entity.Add("ProblemInput", request.Text);
             entity.Add("Problemoutput", request.Rewritten);
 
-            await client.UpdateEntityAsync(entity, Azure.ETag.All);
+            await client.UpsertEntityAsync(entity);
 
             return new OkResult();
         }
