@@ -105,7 +105,8 @@ namespace Editor
             
             if (length >= maxRequestLength)
             {
-                return new BadRequestResult();
+                //log.LogWarning("Request is too long.");
+                //return new OkObjectResult(MakeResultObject("Your input is too long. Try a shorter one."));
             }
 
             var client = await GetTableClient();
