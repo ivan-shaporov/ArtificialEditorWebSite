@@ -31,7 +31,7 @@ namespace Editor
             if (length >= maxRequestTextLength + overlength)
             {
                 log.LogMetric("RequestTooLong", 1);
-                return new OkObjectResult(new { Text = "Your request is too long. Try a shorter one." });
+                return new OkObjectResult(MakeResultObject("Your request is too long. Try a shorter one."));
             }
 
             var request = JsonConvert.DeserializeObject<RewriteRequest>(new string(buffer));
@@ -45,7 +45,7 @@ namespace Editor
             if (request.Text.Length > maxRequestTextLength)
             {
                 log.LogMetric("RequestTooLong", 1);
-                return new OkObjectResult(new { Text = "Your input is too long. Try a shorter one." });
+                return new OkObjectResult(MakeResultObject("Your input is too long. Try a shorter one."));
             }
 
             request.Text = request.Text.Trim();
@@ -81,7 +81,7 @@ namespace Editor
 
             await StoreRewriteLog(partition, id, prefix, request, completion);
 
-            return new OkObjectResult(new {Partition = partition, Id = id, Text = completion.Text });
+            return new OkObjectResult(MakeResultObject(partition: partition, id: id, text: completion.Text));
         }
 
         [FunctionName("Ping")]
@@ -127,6 +127,7 @@ namespace Editor
                 problemEntity.Add("Problemoutput", x.Message);
 
                 await client.UpdateEntityAsync(problemEntity, Azure.ETag.All);
+                return new OkResult();
             }
 
             if (request == null)
@@ -174,6 +175,13 @@ namespace Editor
 
             await client.UpsertEntityAsync(entity);
         }
+
+        private static object MakeResultObject(string text, string partition = null, string id = null) =>
+            new { 
+                    Partition = partition ?? DateTime.UtcNow.ToString("yyyy-MM-dd"),
+                    Id = id ?? Guid.NewGuid().ToString(),
+                    Text = text 
+                };
 
         private static string Hash(string v) => $"{v.GetHashCode()}{new string(v.Reverse().ToArray()).GetHashCode()}";
     }
