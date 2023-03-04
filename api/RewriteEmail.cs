@@ -101,7 +101,7 @@ namespace Editor
             var overlength = 100;
             var maxRequestLength = maxRequestTextLength * 11 + overlength;
             var buffer = new char[maxRequestLength];
-            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, maxRequestLength);
+            int length = await new StreamReader(req.Body).ReadAsync(buffer, 0, 100 /*maxRequestLength*/);
             
             if (length >= maxRequestLength)
             {
